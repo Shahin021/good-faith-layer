@@ -1,0 +1,17 @@
+{
+  "attester": "mock-provenance-v1",
+  "payment_id": "pay-004",
+  "risk_snapshot": {
+    "score": 31,
+    "direct_exposure": "none",
+    "indirect_exposure": "3 hops upstream",
+    "warning_displayed": false
+  },
+  "checks": [
+    {
+      "check": "screen sending address against provider risk list",
+      "result": "risk score 31/100",
+      "outcome": "pass"
+    }
+  ]
+}

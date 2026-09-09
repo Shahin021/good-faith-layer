@@ -1,0 +1,11 @@
+{
+  "payment_id": "pay-002",
+  "deliverable": {
+    "description": "Data scraping script",
+    "delivered": "single file",
+    "acceptance_confirmed_by_payer": true
+  },
+  "relationship_to_payer": "first-time counterparty, no prior history",
+  "recipient_note": "Accepted anyway because the client said the warning was a false positive.",
+  "recipient_claimed_acceptance_time": "2026-08-14T22:10:00Z"
+}

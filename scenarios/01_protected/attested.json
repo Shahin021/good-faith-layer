@@ -1,0 +1,31 @@
+{
+  "attester": "mock-provenance-v1",
+  "payment_id": "pay-001",
+  "risk_snapshot": {
+    "score": 4,
+    "direct_exposure": "none",
+    "indirect_exposure": "none recorded at this time",
+    "warning_displayed": false
+  },
+  "checks": [
+    {
+      "check": "screen sending address against provider risk list",
+      "result": "no exposure recorded, risk score 4/100",
+      "outcome": "pass"
+    },
+    {
+      "check": "confirm counterparty has prior settled history or verified identity",
+      "result": "three prior settled payments from same payer over 7 months",
+      "outcome": "pass"
+    }
+  ],
+  "delivery_evidence": {
+    "reference": "4a91c2e",
+    "payer_acknowledgement": "payer acceptance receipt recorded before T0",
+    "outcome": "pass"
+  },
+  "related_party_check": {
+    "result": "no shared ownership, identity or wallet-control indicators found in the attester record",
+    "outcome": "pass"
+  }
+}

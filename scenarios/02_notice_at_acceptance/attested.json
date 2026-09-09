@@ -1,0 +1,17 @@
+{
+  "attester": "mock-provenance-v1",
+  "payment_id": "pay-002",
+  "risk_snapshot": {
+    "score": 78,
+    "direct_exposure": "sanctioned entity, 2 hops upstream",
+    "warning_displayed": true,
+    "warning_text": "HIGH RISK - review before accepting"
+  },
+  "checks": [
+    {
+      "check": "screen sending address against provider risk list",
+      "result": "risk score 78/100, direct exposure to a sanctioned entity",
+      "outcome": "fail"
+    }
+  ]
+}

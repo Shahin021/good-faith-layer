@@ -1,0 +1,10 @@
+{
+  "payment_id": "pay-006",
+  "deliverable": {
+    "description": "Backend API integration, delivered and deployed",
+    "delivered": "merged to main, staging verified",
+    "acceptance_confirmed_by_payer": true
+  },
+  "relationship_to_payer": "arms-length client, second engagement",
+  "recipient_note": "Everything checked out when I looked."
+}

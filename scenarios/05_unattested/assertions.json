@@ -1,0 +1,11 @@
+{
+  "payment_id": "pay-005",
+  "deliverable": {
+    "description": "Website redesign, delivered in full",
+    "delivered": "32 files, staging URL provided",
+    "acceptance_confirmed_by_payer": true
+  },
+  "recipient_note": "I screened the sending address and the risk score was 4. Everything was clean. I also confirmed the client had prior history with me.",
+  "relationship_to_payer": "arms-length client",
+  "recipient_claimed_acceptance_time": "2026-08-24T11:15:00Z"
+}

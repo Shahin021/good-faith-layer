@@ -1,0 +1,11 @@
+{
+  "payment_id": "pay-003",
+  "deliverable": {
+    "description": "Consulting retainer, month 1 of 3",
+    "delivered": "two of four scheduled sessions held, no written output yet",
+    "acceptance_confirmed_by_payer": true
+  },
+  "relationship_to_payer": "referred by an existing client",
+  "recipient_note": "The remaining sessions were scheduled for the following week.",
+  "recipient_claimed_acceptance_time": "2026-08-19T13:02:00Z"
+}

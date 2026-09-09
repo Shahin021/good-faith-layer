@@ -1,0 +1,31 @@
+{
+  "attester": "mock-provenance-v1",
+  "payment_id": "pay-006",
+  "risk_snapshot": {
+    "score": 6,
+    "direct_exposure": "none",
+    "indirect_exposure": "none recorded at this time",
+    "warning_displayed": false
+  },
+  "checks": [
+    {
+      "check": "screen sending address against provider risk list",
+      "result": "no exposure recorded, risk score 6/100",
+      "outcome": "pass"
+    },
+    {
+      "check": "confirm counterparty has prior settled history or verified identity",
+      "result": "verified identity on file since March",
+      "outcome": "pass"
+    }
+  ],
+  "delivery_evidence": {
+    "reference": "merge:main@staging-verified",
+    "payer_acknowledgement": "payer deployment acceptance recorded before T0",
+    "outcome": "pass"
+  },
+  "related_party_check": {
+    "result": "no shared ownership, identity or wallet-control indicators found in the attester record",
+    "outcome": "pass"
+  }
+}

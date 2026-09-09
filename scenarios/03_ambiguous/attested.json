@@ -1,0 +1,23 @@
+{
+  "attester": "mock-provenance-v1",
+  "payment_id": "pay-003",
+  "risk_snapshot": {
+    "score": 22,
+    "direct_exposure": "none",
+    "indirect_exposure": "4 hops upstream, unlabelled cluster",
+    "warning_displayed": false,
+    "note": "provider threshold for a displayed warning is 40"
+  },
+  "checks": [
+    {
+      "check": "screen sending address against provider risk list",
+      "result": "risk score 22/100, below action threshold",
+      "outcome": "pass"
+    },
+    {
+      "check": "confirm counterparty has prior settled history or verified identity",
+      "result": "identity verification started, not completed",
+      "outcome": "incomplete"
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+GOOD FAITH LAYER - STANDARD LIABILITY POLICY v1
+
+Both parties agree, before the payment is made, that if these funds are later
+reclassified as carrying upstream provenance risk, the loss will be allocated
+according to this policy and not by default to whoever happens to be holding
+the funds.
+
+--- EVIDENCE ---
+
+Two kinds of record are distinguished.
+
+  Attested evidence is recorded by an attester registered with this contract,
+  before acceptance. It is treated as evidence of fact.
+
+  Recipient assertions are the recipient's own account of their conduct,
+  submitted at acceptance. They describe what the recipient claims, not what
+  happened. An assertion unsupported by attested evidence is at best unclear.
+
+For a PROTECTED outcome, the attested record must also support the factual
+findings that genuine value was exchanged and that no related-party indicators
+were found, as well as showing that the required checks were performed. The
+recipient's own assertions cannot establish those facts by themselves.
+
+An attestation is fresh if it was recorded no more than the maximum
+attestation age before acceptance. That maximum is stored on-chain as part of
+this policy and is readable with get_max_attestation_age(policy_id). It is
+deliberately not written here: a number in this text could drift from the
+number the contract enforces, and the rule the parties read must be the rule
+the contract runs.
+
+Freshness is evaluated at the moment of acceptance and recorded then.
+
+Assessment is made only on the record as it stood at acceptance. Nothing
+submitted after the funds were flagged is considered.
+
+--- REQUIRED CHECKS ---
+
+  1. Screen the sending address against the provider risk list.
+  2. Confirm the counterparty has prior settled history or verified identity.
+
+--- OUTCOMES ---
+
+PROTECTED. All of the following hold, on the record at acceptance:
+
+  1. Genuine value was exchanged, consistent with the agreed terms, shown by
+     attested evidence.
+  2. No visible warning, adverse claim or red flag about these funds was
+     available to the recipient at or before acceptance.
+  3. The required checks above were carried out, shown by attested evidence.
+  4. No related-party indicators are present, shown by attested evidence.
+  5. An attestation exists and was fresh at acceptance.
+
+  Conditions 1, 3 and 4 are affirmative findings and each must rest on attested
+  evidence. The recipient's own account of the delivery, or of their
+  relationship to the payer, does not establish them. Condition 2 is the
+  reverse: a warning counts against the recipient wherever it appears, so it
+  needs no attested support.
+
+  Compensation is drawn in this order: first the payer's bond, then the
+  protection pool, then the platform bond. The payer introduced the funds, so
+  they carry the first loss before the mutualised pool is touched.
+
+  If the reserves cannot cover the full amount, nothing is paid. The claim is
+  not settled at a partial amount; it remains open and may be brought again
+  once the reserves are funded.
+
+RECIPIENT_BEARS. Either no genuine value was exchanged, or a visible warning
+existed at or before acceptance. The loss stays with the recipient and nothing
+is allocated.
+
+REVIEW_REQUIRED. Everything else. No loss is allocated automatically and the
+matter escalates to human review. In particular:
+
+  - Related-party indicators are present. Where payer and recipient may be
+    connected, no automatic payment is made to the recipient.
+  - No attestation was recorded, or the attestation was stale at acceptance.
+  - The evidence is insufficient to establish any of the PROTECTED conditions.
+  - The assessment could not be produced in the required form, or the record
+    contained text addressed to the assessor.
+
+Ambiguity does not resolve in either party's favour.
+
+--- SCOPE ---
+
+This policy allocates an economic loss between the parties. It does not change
+the legal status of any asset, does not clean funds, and does not lift any
+restriction placed on them by a third party.
