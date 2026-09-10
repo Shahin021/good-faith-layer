@@ -1,9 +1,32 @@
-# { "Depends": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6" }
-
+# v0.1.0
+# { "Depends": "py-genlayer:latest" }
 from genlayer import *
 from datetime import datetime, timezone
+from dataclasses import dataclass
 import json
 import typing
+
+
+
+def _address_from_hex(value: str) -> Address:
+    """
+    Studio/local GenVM compatibility helper.
+
+    The local v0.1.3 runtime can route plain str values through Address's
+    base64 branch. Studio supplies user-entered EVM addresses as 0x-prefixed
+    hex strings, so decode that representation explicitly to 20 raw bytes
+    before constructing Address.
+    """
+    value = value.strip()
+    if value.startswith(("0x", "0X")):
+        value = value[2:]
+    if len(value) != 40:
+        raise Exception("address must be a 20-byte 0x-prefixed hex string")
+    try:
+        raw = bytes.fromhex(value)
+    except ValueError:
+        raise Exception("address contains non-hex characters")
+    return Address(raw)
 
 
 ENUM_KEYS = (
@@ -195,9 +218,9 @@ class GoodFaithLayer(gl.Contract):
     policies: TreeMap[str, Policy]
     payments: TreeMap[str, Payment]
 
-    def __init__(self, flag_authority: Address):
+    def __init__(self, flag_authority: str):
         self.owner = gl.message.sender_address
-        self.flag_authority = flag_authority
+        self.flag_authority = _address_from_hex(flag_authority)
         self.protection_pool = u256(0)
         self.platform_bond = u256(0)
 
@@ -209,17 +232,19 @@ class GoodFaithLayer(gl.Contract):
     # Roles and policy
     # -----------------------------------------------------------------------
     @gl.public.write
-    def register_attester(self, who: Address) -> None:
+    def register_attester(self, who: str) -> None:
         self._only_owner()
-        self.attesters[who] = True
+        address = _address_from_hex(who)
+        self.attesters[address] = True
 
     @gl.public.view
-    def is_attester(self, who: Address) -> bool:
-        return self.attesters.get(who, False)
+    def is_attester(self, who: str) -> bool:
+        address = _address_from_hex(who)
+        return self.attesters.get(address, False)
 
     @gl.public.write
     def register_policy(
-        self, policy_id: str, policy_text: str, max_attestation_age_seconds: u256
+        self, policy_id: str, policy_text: str, max_attestation_age_seconds: int
     ) -> None:
         self._only_owner()
         if policy_id in self.policies:
@@ -234,7 +259,7 @@ class GoodFaithLayer(gl.Contract):
         return self.policies[policy_id].text
 
     @gl.public.view
-    def get_max_attestation_age(self, policy_id: str) -> u256:
+    def get_max_attestation_age(self, policy_id: str) -> int:
         """
         The single source of truth for the freshness window. The policy text
         deliberately does not restate it as a number, so the written rule
@@ -246,17 +271,17 @@ class GoodFaithLayer(gl.Contract):
     # Funding
     # -----------------------------------------------------------------------
     @gl.public.write
-    def fund_protection_pool(self, amount: u256) -> None:
+    def fund_protection_pool(self, amount: int) -> None:
         self._only_owner()
         self.protection_pool = u256(int(self.protection_pool) + int(amount))
 
     @gl.public.write
-    def fund_platform_bond(self, amount: u256) -> None:
+    def fund_platform_bond(self, amount: int) -> None:
         self._only_owner()
         self.platform_bond = u256(int(self.platform_bond) + int(amount))
 
     @gl.public.write
-    def post_payer_bond(self, amount: u256) -> None:
+    def post_payer_bond(self, amount: int) -> None:
         sender = gl.message.sender_address
         current = int(self.payer_bonds.get(sender, u256(0)))
         self.payer_bonds[sender] = u256(current + int(amount))
@@ -268,8 +293,8 @@ class GoodFaithLayer(gl.Contract):
     def register_payment(
         self,
         payment_id: str,
-        recipient: Address,
-        amount: u256,
+        recipient: str,
+        amount: int,
         policy_id: str,
         terms: str,
     ) -> None:
@@ -278,9 +303,11 @@ class GoodFaithLayer(gl.Contract):
         if policy_id not in self.policies:
             raise Exception("unknown policy_id")
 
+        recipient_address = _address_from_hex(recipient)
+
         self.payments[payment_id] = Payment(
             payer=gl.message.sender_address,
-            recipient=recipient,
+            recipient=recipient_address,
             amount=amount,
             policy_id=policy_id,
             terms=terms,
@@ -559,17 +586,18 @@ class GoodFaithLayer(gl.Contract):
         return self.payments[payment_id].attestation_fresh
 
     @gl.public.view
-    def get_paid_out(self, payment_id: str) -> u256:
+    def get_paid_out(self, payment_id: str) -> int:
         return self.payments[payment_id].paid_out
 
     @gl.public.view
-    def get_claim_balance(self, who: Address) -> u256:
-        return self.claim_balances.get(who, u256(0))
+    def get_claim_balance(self, who: str) -> int:
+        address = _address_from_hex(who)
+        return self.claim_balances.get(address, u256(0))
 
     @gl.public.view
-    def get_protection_pool(self) -> u256:
+    def get_protection_pool(self) -> int:
         return self.protection_pool
 
     @gl.public.view
-    def get_platform_bond(self) -> u256:
+    def get_platform_bond(self) -> int:
         return self.platform_bond
