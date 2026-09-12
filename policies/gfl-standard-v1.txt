@@ -35,8 +35,10 @@ submitted after the funds were flagged is considered.
 
 --- REQUIRED CHECKS ---
 
-  1. Screen the sending address against the provider risk list.
-  2. Confirm the counterparty has prior settled history or verified identity.
+The required checks and their canonical identifiers are stored on-chain as
+part of this policy and are readable with get_required_checks(policy_id).
+They are deliberately not duplicated in this text: the list the parties rely
+on must be the same list the contract enforces.
 
 A required check counts as performed when it was actually carried out, even
 if its result was adverse or failed. The result is assessed separately,
@@ -59,7 +61,7 @@ PROTECTED. All of the following hold, on the record at acceptance:
      attested evidence.
   2. No visible warning, adverse claim or red flag about these funds was
      available to the recipient at or before acceptance.
-  3. The required checks above were carried out, shown by attested evidence.
+  3. The required checks stored on-chain for this policy were carried out, shown by attested evidence.
   4. No related-party indicators are present, shown by attested evidence.
   5. An attestation exists and was fresh at acceptance.
 

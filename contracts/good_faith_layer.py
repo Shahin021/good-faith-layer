@@ -172,10 +172,71 @@ def decide(f: dict, has_attestation: bool, attestation_fresh: bool) -> tuple:
     )
 
 
+def _canonicalize_required_checks(raw: str) -> str:
+    try:
+        parsed = json.loads(raw)
+    except Exception:
+        raise Exception("required checks must be valid JSON")
+
+    if not isinstance(parsed, list) or len(parsed) == 0:
+        raise Exception("required checks must be a non-empty JSON array")
+
+    seen = set()
+    canonical = []
+    allowed_id_chars = "abcdefghijklmnopqrstuvwxyz0123456789_"
+
+    for item in parsed:
+        if not isinstance(item, dict):
+            raise Exception("each required check must be an object")
+
+        if set(item.keys()) != {"check_id", "description"}:
+            raise Exception(
+                "each required check must contain exactly check_id and description"
+            )
+
+        check_id = item["check_id"]
+        description = item["description"]
+
+        if not isinstance(check_id, str):
+            raise Exception("check_id must be a string")
+        check_id = check_id.strip()
+
+        if (
+            not check_id
+            or check_id[0] not in "abcdefghijklmnopqrstuvwxyz"
+            or any(ch not in allowed_id_chars for ch in check_id)
+        ):
+            raise Exception(
+                "check_id must use lowercase letters, digits and underscores"
+            )
+
+        if check_id in seen:
+            raise Exception("duplicate required check_id")
+        seen.add(check_id)
+
+        if not isinstance(description, str) or not description.strip():
+            raise Exception("required check description must be non-empty")
+
+        canonical.append(
+            {
+                "check_id": check_id,
+                "description": description.strip(),
+            }
+        )
+
+    return json.dumps(
+        canonical,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    )
+
+
 @allow_storage
 @dataclass
 class Policy:
     text: str
+    required_checks_json: str
     max_attestation_age_seconds: u256
 
 
@@ -244,19 +305,44 @@ class GoodFaithLayer(gl.Contract):
 
     @gl.public.write
     def register_policy(
-        self, policy_id: str, policy_text: str, max_attestation_age_seconds: int
+        self,
+        policy_id: str,
+        policy_text: str,
+        required_checks_json: str,
+        max_attestation_age_seconds: int,
     ) -> None:
         self._only_owner()
         if policy_id in self.policies:
             raise Exception("policy_id already exists; policies are immutable")
+
+        canonical_checks = _canonicalize_required_checks(required_checks_json)
+
         self.policies[policy_id] = Policy(
             text=policy_text,
+            required_checks_json=canonical_checks,
             max_attestation_age_seconds=max_attestation_age_seconds,
         )
 
     @gl.public.view
     def get_policy(self, policy_id: str) -> str:
         return self.policies[policy_id].text
+
+    @gl.public.view
+    def get_required_checks(self, policy_id: str) -> str:
+        """
+        Canonical structured definition of the checks required by this policy.
+        This is the single source of truth; the prose policy does not duplicate
+        the list.
+        """
+        return self.policies[policy_id].required_checks_json
+
+    @gl.public.view
+    def get_required_check_ids(self, policy_id: str) -> str:
+        checks = json.loads(self.policies[policy_id].required_checks_json)
+        return json.dumps(
+            [item["check_id"] for item in checks],
+            separators=(",", ":"),
+        )
 
     @gl.public.view
     def get_max_attestation_age(self, policy_id: str) -> int:

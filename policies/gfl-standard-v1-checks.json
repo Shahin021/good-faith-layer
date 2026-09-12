@@ -1,0 +1,10 @@
+[
+  {
+    "check_id": "provider_risk_screen",
+    "description": "Screen the sending address against the provider risk list."
+  },
+  {
+    "check_id": "counterparty_history_or_identity",
+    "description": "Confirm the counterparty has prior settled history or verified identity."
+  }
+]
