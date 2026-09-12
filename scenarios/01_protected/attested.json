@@ -29,5 +29,10 @@
     "status": "performed",
     "result": "no_indicators",
     "details": "no shared ownership, identity or wallet-control indicators found in the attester record"
+  },
+  "notice_check": {
+    "status": "performed",
+    "result": "no_notice_found",
+    "details": "No adverse notice was found in the attested pre-acceptance record."
   }
 }

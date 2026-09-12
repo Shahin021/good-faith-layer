@@ -232,6 +232,314 @@ def _canonicalize_required_checks(raw: str) -> str:
     )
 
 
+
+def _canonicalize_attested_evidence(raw: str) -> str:
+    try:
+        parsed = json.loads(raw)
+    except Exception:
+        raise Exception("attested evidence must be valid JSON")
+
+    if not isinstance(parsed, dict):
+        raise Exception("attested evidence must be a JSON object")
+
+    allowed_top = {
+        "schema_version",
+        "checks",
+        "related_party_check",
+        "notice_check",
+        "warning_displayed",
+        "warning_text",
+        "delivery_evidence",
+        "context",
+    }
+
+    if set(parsed.keys()) - allowed_top:
+        raise Exception("attested evidence contains unknown top-level fields")
+
+    if parsed.get("schema_version") != "gfl-attestation-v1":
+        raise Exception("unsupported attestation schema version")
+
+    checks = parsed.get("checks")
+    if not isinstance(checks, list):
+        raise Exception("checks must be a JSON array")
+
+    canonical_checks = []
+
+    for item in checks:
+        if not isinstance(item, dict):
+            raise Exception("each attested check must be an object")
+
+        allowed = {"check_id", "status", "result", "metadata"}
+        if set(item.keys()) - allowed:
+            raise Exception("attested check contains unknown fields")
+
+        if "check_id" not in item or "status" not in item:
+            raise Exception("attested check requires check_id and status")
+
+        check_id = item["check_id"]
+        status = item["status"]
+
+        if not isinstance(check_id, str) or not check_id.strip():
+            raise Exception("attested check_id must be a non-empty string")
+
+        if status not in ("performed", "not_performed", "incomplete"):
+            raise Exception("invalid attested check status")
+
+        clean = {
+            "check_id": check_id.strip(),
+            "status": status,
+        }
+
+        if "result" in item:
+            if not isinstance(item["result"], str):
+                raise Exception("attested check result must be a string")
+            clean["result"] = item["result"]
+
+        if "metadata" in item:
+            if not isinstance(item["metadata"], dict):
+                raise Exception("attested check metadata must be an object")
+            clean["metadata"] = item["metadata"]
+
+        canonical_checks.append(clean)
+
+    out = {
+        "schema_version": "gfl-attestation-v1",
+        "checks": canonical_checks,
+    }
+
+    if "warning_displayed" in parsed:
+        if not isinstance(parsed["warning_displayed"], bool):
+            raise Exception("warning_displayed must be boolean")
+        out["warning_displayed"] = parsed["warning_displayed"]
+
+    if "warning_text" in parsed:
+        if not isinstance(parsed["warning_text"], str):
+            raise Exception("warning_text must be a string")
+        out["warning_text"] = parsed["warning_text"]
+
+    if "delivery_evidence" in parsed:
+        if not isinstance(parsed["delivery_evidence"], dict):
+            raise Exception("delivery_evidence must be an object")
+        out["delivery_evidence"] = parsed["delivery_evidence"]
+
+    if "context" in parsed:
+        if not isinstance(parsed["context"], dict):
+            raise Exception("context must be an object")
+        out["context"] = parsed["context"]
+
+    if "notice_check" in parsed:
+        notice = parsed["notice_check"]
+
+        if not isinstance(notice, dict):
+            raise Exception("notice_check must be an object")
+
+        allowed = {"status", "result", "details", "metadata"}
+        if set(notice.keys()) - allowed:
+            raise Exception("notice_check contains unknown fields")
+
+        if "status" not in notice:
+            raise Exception("notice_check requires status")
+
+        status = notice["status"]
+        if status not in ("performed", "not_performed", "incomplete"):
+            raise Exception("invalid notice_check status")
+
+        clean_notice = {"status": status}
+
+        if "result" in notice:
+            result = notice["result"]
+            if result not in (
+                "notice_found",
+                "no_notice_found",
+                "inconclusive",
+            ):
+                raise Exception("invalid notice_check result")
+            clean_notice["result"] = result
+
+        if status == "performed" and "result" not in clean_notice:
+            raise Exception("performed notice_check requires a result")
+
+        if "details" in notice:
+            if not isinstance(notice["details"], str):
+                raise Exception("notice_check details must be a string")
+            clean_notice["details"] = notice["details"]
+
+        if "metadata" in notice:
+            if not isinstance(notice["metadata"], dict):
+                raise Exception("notice_check metadata must be an object")
+            clean_notice["metadata"] = notice["metadata"]
+
+        out["notice_check"] = clean_notice
+
+    if "related_party_check" in parsed:
+        rp = parsed["related_party_check"]
+
+        if not isinstance(rp, dict):
+            raise Exception("related_party_check must be an object")
+
+        allowed = {"status", "result", "details", "metadata"}
+        if set(rp.keys()) - allowed:
+            raise Exception("related_party_check contains unknown fields")
+
+        if "status" not in rp:
+            raise Exception("related_party_check requires status")
+
+        status = rp["status"]
+        if status not in ("performed", "not_performed", "incomplete"):
+            raise Exception("invalid related_party_check status")
+
+        clean_rp = {"status": status}
+
+        if "result" in rp:
+            result = rp["result"]
+            if result not in (
+                "indicators_found",
+                "no_indicators",
+                "inconclusive",
+            ):
+                raise Exception("invalid related_party_check result")
+            clean_rp["result"] = result
+
+        if status == "performed" and "result" not in clean_rp:
+            raise Exception(
+                "performed related_party_check requires a result"
+            )
+
+        if "details" in rp:
+            if not isinstance(rp["details"], str):
+                raise Exception("related_party_check details must be a string")
+            clean_rp["details"] = rp["details"]
+
+        if "metadata" in rp:
+            if not isinstance(rp["metadata"], dict):
+                raise Exception("related_party_check metadata must be an object")
+            clean_rp["metadata"] = rp["metadata"]
+
+        out["related_party_check"] = clean_rp
+
+    return json.dumps(
+        out,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    )
+
+
+def _derive_agreed_checks_performed(
+    attested: dict,
+    required_checks_json: str,
+) -> str:
+    required = json.loads(required_checks_json)
+    required_ids = [item["check_id"] for item in required]
+
+    seen = {}
+    unknown_id = False
+
+    for item in attested.get("checks", []):
+        check_id = item.get("check_id")
+        status = item.get("status")
+
+        if check_id not in required_ids:
+            unknown_id = True
+            continue
+
+        if check_id not in seen:
+            seen[check_id] = []
+
+        seen[check_id].append(status)
+
+    # Explicit non-performance wins over missing or ambiguous evidence.
+    for check_id in required_ids:
+        if "not_performed" in seen.get(check_id, []):
+            return "no"
+
+    # Unknown check IDs must never silently count toward the policy.
+    if unknown_id:
+        return "unclear"
+
+    # Every required check must be affirmatively performed.
+    for check_id in required_ids:
+        statuses = seen.get(check_id, [])
+
+        if len(statuses) == 0:
+            return "unclear"
+
+        for status in statuses:
+            if status != "performed":
+                return "unclear"
+
+    return "yes"
+
+
+def _derive_related_party_indicators(attested: dict) -> str:
+    rp = attested.get("related_party_check")
+
+    if not isinstance(rp, dict):
+        return "unclear"
+
+    if rp.get("status") != "performed":
+        return "unclear"
+
+    result = rp.get("result")
+
+    if result == "indicators_found":
+        return "yes"
+
+    if result == "no_indicators":
+        return "no"
+
+    return "unclear"
+
+
+def _derive_structured_notice(attested: dict) -> str:
+    # Explicit adverse notice always wins.
+    if attested.get("warning_displayed") is True:
+        return "yes"
+
+    notice = attested.get("notice_check")
+
+    if not isinstance(notice, dict):
+        return "unclear"
+
+    if notice.get("status") != "performed":
+        return "unclear"
+
+    result = notice.get("result")
+
+    if result == "notice_found":
+        return "yes"
+
+    if result == "no_notice_found":
+        return "no"
+
+    return "unclear"
+
+
+def _derive_structured_findings(
+    attested_evidence: str,
+    required_checks_json: str,
+) -> dict:
+    if attested_evidence == "":
+        return {
+            "agreed_checks_performed": "unclear",
+            "related_party_indicators": "unclear",
+            "notice_at_acceptance": "unclear",
+        }
+
+    attested = json.loads(attested_evidence)
+
+    return {
+        "agreed_checks_performed": _derive_agreed_checks_performed(
+            attested,
+            required_checks_json,
+        ),
+        "related_party_indicators": _derive_related_party_indicators(
+            attested
+        ),
+        "notice_at_acceptance": _derive_structured_notice(attested),
+    }
+
+
 @allow_storage
 @dataclass
 class Policy:
@@ -431,7 +739,7 @@ class GoodFaithLayer(gl.Contract):
         if payment.attested_evidence != "":
             raise Exception("this payment already carries an attestation")
 
-        payment.attested_evidence = attested_evidence
+        payment.attested_evidence = _canonicalize_attested_evidence(attested_evidence)
         payment.attested_by = sender
         payment.attested_at_unix = u256(int(datetime.now(timezone.utc).timestamp()))
         self.payments[payment_id] = payment

@@ -20,5 +20,10 @@
       "indirect_exposure": "4 hops upstream, unlabelled cluster",
       "note": "provider threshold for a displayed warning is 40"
     }
+  },
+  "notice_check": {
+    "status": "incomplete",
+    "result": "inconclusive",
+    "details": "The available record does not establish the absence of all notice."
   }
 }

@@ -14,5 +14,10 @@
       "direct_exposure": "none",
       "indirect_exposure": "3 hops upstream"
     }
+  },
+  "notice_check": {
+    "status": "incomplete",
+    "result": "inconclusive",
+    "details": "The available record does not establish the absence of all notice."
   }
 }

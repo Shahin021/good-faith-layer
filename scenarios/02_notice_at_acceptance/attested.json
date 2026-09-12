@@ -14,5 +14,10 @@
       "score": 78,
       "direct_exposure": "sanctioned entity, 2 hops upstream"
     }
+  },
+  "notice_check": {
+    "status": "performed",
+    "result": "notice_found",
+    "details": "A high-risk warning was displayed before acceptance."
   }
 }
