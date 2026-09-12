@@ -106,6 +106,116 @@ def parse_findings(raw) -> dict:
     return out
 
 
+
+SEMANTIC_REQUIRED_KEYS = {
+    "value_exchanged",
+    "semantic_notice_found",
+    "prompt_injection_detected",
+    "reasoning",
+}
+
+SEMANTIC_DECISION_KEYS = (
+    "value_exchanged",
+    "semantic_notice_found",
+    "prompt_injection_detected",
+    "parse_ok",
+)
+
+
+def parse_semantic_findings(raw) -> dict:
+    failed = {
+        "value_exchanged": "unclear",
+        "semantic_notice_found": "unclear",
+        "prompt_injection_detected": False,
+        "reasoning": "",
+        "parse_ok": False,
+    }
+
+    if isinstance(raw, dict):
+        parsed = raw
+    elif isinstance(raw, str):
+        text = raw.strip()
+
+        if text.startswith("```"):
+            newline = text.find("\n")
+            if newline == -1:
+                return failed
+
+            text = text[newline + 1 :]
+
+            if text.rstrip().endswith("```"):
+                text = text.rstrip()[:-3]
+
+            text = text.strip()
+
+        try:
+            parsed = json.loads(text)
+        except Exception:
+            return failed
+    else:
+        return failed
+
+    if not isinstance(parsed, dict):
+        return failed
+
+    if set(parsed.keys()) != SEMANTIC_REQUIRED_KEYS:
+        return failed
+
+    value = parsed["value_exchanged"]
+    if (
+        not isinstance(value, str)
+        or value.strip().lower() not in ("yes", "no", "unclear")
+    ):
+        return failed
+
+    semantic_notice = parsed["semantic_notice_found"]
+    if (
+        not isinstance(semantic_notice, str)
+        or semantic_notice.strip().lower() not in ("yes", "unclear")
+    ):
+        return failed
+
+    if not isinstance(parsed["prompt_injection_detected"], bool):
+        return failed
+
+    if not isinstance(parsed["reasoning"], str):
+        return failed
+
+    return {
+        "value_exchanged": value.strip().lower(),
+        "semantic_notice_found": semantic_notice.strip().lower(),
+        "prompt_injection_detected": parsed["prompt_injection_detected"],
+        "reasoning": parsed["reasoning"][:400],
+        "parse_ok": True,
+    }
+
+
+def _merge_findings(
+    semantic: dict,
+    structured: dict,
+) -> dict:
+    notice = structured["notice_at_acceptance"]
+
+    # Semantic evidence may discover adverse notice that the structured
+    # fields did not capture. It may only upgrade toward yes; it can never
+    # manufacture a negative finding from silence.
+    if semantic["semantic_notice_found"] == "yes":
+        notice = "yes"
+
+    return {
+        "value_exchanged": semantic["value_exchanged"],
+        "notice_at_acceptance": notice,
+        "agreed_checks_performed":
+            structured["agreed_checks_performed"],
+        "related_party_indicators":
+            structured["related_party_indicators"],
+        "prompt_injection_detected":
+            semantic["prompt_injection_detected"],
+        "reasoning": semantic["reasoning"],
+        "parse_ok": semantic["parse_ok"],
+    }
+
+
 def decide(f: dict, has_attestation: bool, attestation_fresh: bool) -> tuple:
     """
     Deterministic consequence. Only one verdict pays out, and every doubt
