@@ -38,8 +38,21 @@ submitted after the funds were flagged is considered.
   1. Screen the sending address against the provider risk list.
   2. Confirm the counterparty has prior settled history or verified identity.
 
+A required check counts as performed when it was actually carried out, even
+if its result was adverse or failed. The result is assessed separately,
+including as notice where it creates a visible warning or red flag.
+
 --- OUTCOMES ---
 
+Outcome precedence is intentional. If related-party indicators are present,
+REVIEW_REQUIRED takes precedence even when a no-value finding or a visible
+warning would otherwise produce RECIPIENT_BEARS.
+
+A missing or stale attestation blocks a PROTECTED outcome, but it does not
+erase an independently established adverse finding. A finding that no genuine
+value was exchanged, or that a visible warning existed at or before acceptance,
+may still result in RECIPIENT_BEARS even when no attestation was recorded or
+the attestation was stale.
 PROTECTED. All of the following hold, on the record at acceptance:
 
   1. Genuine value was exchanged, consistent with the agreed terms, shown by

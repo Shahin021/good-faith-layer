@@ -125,6 +125,17 @@ CASES = [
     ("related parties, else clean", J(v="yes", n="no", c="yes", r="yes"), True, True, "REVIEW_REQUIRED"),
     ("related parties unclear",     J(v="yes", n="no", c="yes", r="unclear"), True, True, "REVIEW_REQUIRED"),
 
+    # --- intentional precedence -----------------------------------------
+    # Related-party evidence stops the automatic path even when another
+    # adverse finding would otherwise make the recipient bear the loss.
+    ("related + warning precedence", J(v="yes", n="yes", c="yes", r="yes"), True, True, "REVIEW_REQUIRED"),
+    ("related + no-value precedence", J(v="no", n="no", c="yes", r="yes"), True, True, "REVIEW_REQUIRED"),
+
+    # Missing or stale attestation blocks PROTECTED; it does not erase an
+    # independently established adverse finding. This ordering is deliberate.
+    ("warning stands without attestation", J(v="yes", n="yes", c="yes", r="no"), False, False, "RECIPIENT_BEARS"),
+    ("no-value stands with stale attestation", J(v="no", n="no", c="yes", r="no"), True, False, "RECIPIENT_BEARS"),
+
     # --- schema failures -------------------------------------------------
     ("omits two keys",
      '{"value_exchanged":"yes","notice_at_acceptance":"no","agreed_checks_performed":"yes"}',
