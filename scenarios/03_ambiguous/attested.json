@@ -1,23 +1,24 @@
 {
-  "attester": "mock-provenance-v1",
-  "payment_id": "pay-003",
-  "risk_snapshot": {
-    "score": 22,
-    "direct_exposure": "none",
-    "indirect_exposure": "4 hops upstream, unlabelled cluster",
-    "warning_displayed": false,
-    "note": "provider threshold for a displayed warning is 40"
-  },
+  "schema_version": "gfl-attestation-v1",
   "checks": [
     {
-      "check": "screen sending address against provider risk list",
-      "result": "risk score 22/100, below action threshold",
-      "outcome": "pass"
+      "check_id": "provider_risk_screen",
+      "status": "performed",
+      "result": "risk score 22/100, below action threshold"
     },
     {
-      "check": "confirm counterparty has prior settled history or verified identity",
-      "result": "identity verification started, not completed",
-      "outcome": "incomplete"
+      "check_id": "counterparty_history_or_identity",
+      "status": "incomplete",
+      "result": "identity verification started, not completed"
     }
-  ]
+  ],
+  "warning_displayed": false,
+  "context": {
+    "risk_snapshot": {
+      "score": 22,
+      "direct_exposure": "none",
+      "indirect_exposure": "4 hops upstream, unlabelled cluster",
+      "note": "provider threshold for a displayed warning is 40"
+    }
+  }
 }

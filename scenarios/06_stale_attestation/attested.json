@@ -1,31 +1,33 @@
 {
-  "attester": "mock-provenance-v1",
-  "payment_id": "pay-006",
-  "risk_snapshot": {
-    "score": 6,
-    "direct_exposure": "none",
-    "indirect_exposure": "none recorded at this time",
-    "warning_displayed": false
-  },
+  "schema_version": "gfl-attestation-v1",
   "checks": [
     {
-      "check": "screen sending address against provider risk list",
-      "result": "no exposure recorded, risk score 6/100",
-      "outcome": "pass"
+      "check_id": "provider_risk_screen",
+      "status": "performed",
+      "result": "no exposure recorded, risk score 6/100"
     },
     {
-      "check": "confirm counterparty has prior settled history or verified identity",
-      "result": "verified identity on file since March",
-      "outcome": "pass"
+      "check_id": "counterparty_history_or_identity",
+      "status": "performed",
+      "result": "verified identity on file since March"
     }
   ],
+  "warning_displayed": false,
+  "context": {
+    "risk_snapshot": {
+      "score": 6,
+      "direct_exposure": "none",
+      "indirect_exposure": "none recorded at this time"
+    }
+  },
   "delivery_evidence": {
     "reference": "merge:main@staging-verified",
     "payer_acknowledgement": "payer deployment acceptance recorded before T0",
     "outcome": "pass"
   },
   "related_party_check": {
-    "result": "no shared ownership, identity or wallet-control indicators found in the attester record",
-    "outcome": "pass"
+    "status": "performed",
+    "result": "no_indicators",
+    "details": "no shared ownership, identity or wallet-control indicators found in the attester record"
   }
 }
