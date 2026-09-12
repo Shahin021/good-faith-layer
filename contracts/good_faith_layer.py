@@ -282,10 +282,18 @@ def decide(f: dict, has_attestation: bool, attestation_fresh: bool) -> tuple:
     )
 
 
-def _canonicalize_required_checks(raw: str) -> str:
-    try:
-        parsed = json.loads(raw)
-    except Exception:
+def _canonicalize_required_checks(raw) -> str:
+    # GenLayer CLI 0.39.2 eagerly parses JSON-looking --args values.
+    # A JSON array supplied to a public string parameter can therefore
+    # arrive here as an already-decoded Python list.
+    if isinstance(raw, str):
+        try:
+            parsed = json.loads(raw)
+        except Exception:
+            raise Exception("required checks must be valid JSON")
+    elif isinstance(raw, list):
+        parsed = raw
+    else:
         raise Exception("required checks must be valid JSON")
 
     if not isinstance(parsed, list) or len(parsed) == 0:
