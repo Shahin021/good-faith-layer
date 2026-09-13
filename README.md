@@ -4,6 +4,12 @@ A liability layer for post-settlement payment risk in the agentic economy.
 
 Track: **Agentic Commerce Infrastructure**
 
+> **Runtime finding:** In a five-validator local GenLayer run, the leader model
+> missed an explicit `SYSTEM OVERRIDE` prompt injection and returned
+> `prompt_injection_detected=false`. The deterministic guard still forced
+> `REVIEW_REQUIRED`, with all five validators agreeing on the final economic
+> verdict and zero payout.
+
 ---
 
 ## The problem
@@ -99,6 +105,11 @@ Those findings are not delegated to the model. A required check marked
 `performed` counts as performed even if its result is adverse. Explicit
 `not_performed` establishes `no`; missing, incomplete, invalid or unknown
 evidence routes to `unclear`.
+
+`related_party_check` is intentionally asymmetric. Not performing a required
+check proves that required action was not performed. Not performing a
+relationship check proves neither relationship nor independence, so the
+related-party finding remains `unclear`.
 
 Structured notice follows the same rule. A displayed warning or a performed
 notice check with `notice_found` establishes `yes`; a performed
@@ -324,7 +335,8 @@ fresh at acceptance. The leader semantic response parsed successfully but return
 `semantic_notice_found=unclear`. The deterministic high-signal guard nevertheless
 routed the claim to `REVIEW_REQUIRED`, paid out `0`, and stored the fixed explanation
 `The input contained text addressed to the assessor.` The runtime reached
-`MAJORITY_AGREE` with 5/5 validator votes on the final verdict.
+`MAJORITY_AGREE`, with all five validators agreeing on the final economic
+verdict.
 
 This demonstrates the deterministic guard overriding a model false negative. It does
 not mean that five models independently detected the injection.
