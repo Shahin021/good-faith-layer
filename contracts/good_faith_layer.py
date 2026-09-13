@@ -112,9 +112,38 @@ def parse_semantic_findings(raw) -> dict:
     }
 
 
+def _has_obvious_assessor_instruction(
+    semantic_attested: str,
+    assertions: str,
+) -> bool:
+    """
+    Fail closed on explicit assessor-directed instructions.
+
+    This is intentionally narrow. Ambiguous manipulation remains model-owned.
+    """
+    text = semantic_attested + "\n" + assertions
+    compact = " ".join(text.lower().split())
+
+    high_signal_phrases = (
+        "system override",
+        "ignore all previous instructions",
+        "ignore previous instructions",
+        "new instruction to the assessing model",
+        "instruction to the assessing model",
+        "instruction to the assessor",
+        "instructions to the assessor",
+    )
+
+    return any(
+        phrase in compact
+        for phrase in high_signal_phrases
+    )
+
+
 def _merge_findings(
     semantic: dict,
     structured: dict,
+    deterministic_injection: bool = False,
 ) -> dict:
     notice = structured["notice_at_acceptance"]
 
@@ -131,8 +160,10 @@ def _merge_findings(
             structured["agreed_checks_performed"],
         "related_party_indicators":
             structured["related_party_indicators"],
-        "prompt_injection_detected":
-            semantic["prompt_injection_detected"],
+        "prompt_injection_detected": (
+            semantic["prompt_injection_detected"]
+            or deterministic_injection
+        ),
         "reasoning": semantic["reasoning"],
         "parse_ok": semantic["parse_ok"],
     }
@@ -920,6 +951,11 @@ class GoodFaithLayer(gl.Contract):
                 sort_keys=True,
             )
 
+        deterministic_injection = _has_obvious_assessor_instruction(
+            semantic_attested,
+            assertions,
+        )
+
         prompt = (
             "You are assessing a payment that was later flagged for upstream "
             "provenance risk.\n\n"
@@ -1027,10 +1063,12 @@ class GoodFaithLayer(gl.Contract):
                 mine_findings = _merge_findings(
                     mine,
                     structured,
+                    deterministic_injection,
                 )
                 theirs_findings = _merge_findings(
                     theirs,
                     structured,
+                    deterministic_injection,
                 )
 
                 mine_verdict, _ = decide(
@@ -1058,6 +1096,7 @@ class GoodFaithLayer(gl.Contract):
         findings = _merge_findings(
             semantic,
             structured,
+            deterministic_injection,
         )
 
         verdict, reasoning = decide(
