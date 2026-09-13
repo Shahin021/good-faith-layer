@@ -186,6 +186,12 @@ on another semantic finding.
 Consensus is therefore over the economic consequence rather than latent model
 fields. `reasoning` is not a consensus target.
 
+For verdict branches that append semantic prose, the stored `reasoning` comes from
+the leader's semantic result and is not separately consensus-validated. It should be
+treated as an audit explanation, not as a fact independently agreed by every
+validator. Deterministic branches such as semantic parse failure and prompt-injection
+rejection use fixed contract-defined explanations instead.
+
 If validators cannot agree on that final consequence, the transaction remains
 undetermined and no settlement state transition is committed.
 
@@ -212,9 +218,11 @@ the claim to `REVIEW_REQUIRED`.
 Two transport normalisations are tolerated: a markdown fence wrapping the entire
 response may be removed, and enum values are lower-cased.
 
-None of this claims to solve prompt injection. It narrows what the model is allowed
-to decide, prevents it from rewriting deterministic facts, and requires independent
-validators to agree on the final economic consequence.
+Prompt injection is handled as defense in depth, not claimed solved. Explicit
+high-signal assessor-directed instructions in untrusted semantic evidence or recipient
+assertions are detected deterministically and fail closed. The model remains a second
+line for subtler manipulation. Neither layer can rewrite the structured facts already
+derived by contract code, and validators compare the final economic consequence.
 
 ### Verdicts
 
@@ -271,7 +279,7 @@ payout, because it is older than the policy's allowed freshness window.
 
 ## Verification
 
-The local regression suite currently passes **118 / 118 checks**.
+The local regression suite currently passes **123 / 123 checks**.
 
 | Test | Checks |
 |---|---:|
@@ -284,7 +292,8 @@ The local regression suite currently passes **118 / 118 checks**.
 | `test_structured_attestation.py` | 16 |
 | `test_verdict_consensus.py` | 4 |
 | `test_attestation_cli_compat.py` | 2 |
-| **Total** | **118** |
+| `test_injection_guard.py` | 5 |
+| **Total** | **123** |
 
 The local suite covers the frozen verdict precedence, policy/code conformance,
 access control, lifecycle rules, freshness boundaries, settlement waterfall,
@@ -301,12 +310,30 @@ GenLayer runtime:
 |---|---|---:|
 | `01_protected` | `PROTECTED` | 1000 |
 | `02_notice_at_acceptance` | `RECIPIENT_BEARS` | 0 |
+| `04_injection` | `REVIEW_REQUIRED` | 0 |
 | `05_unattested` | `REVIEW_REQUIRED` | 0 |
 | `06_stale_attestation` | `REVIEW_REQUIRED` | 0 |
 
 Scenario 02 additionally verifies why consensus is taken over the final verdict:
 validators can disagree on a lower-level semantic finding while still agreeing on the
 same economic consequence because structured notice has precedence.
+
+Scenario 04 was re-run on a fresh deployment of commit `41fcaac`. The attestation was
+fresh at acceptance. The leader semantic response parsed successfully but returned
+`prompt_injection_detected=false`, `value_exchanged=yes` and
+`semantic_notice_found=unclear`. The deterministic high-signal guard nevertheless
+routed the claim to `REVIEW_REQUIRED`, paid out `0`, and stored the fixed explanation
+`The input contained text addressed to the assessor.` The runtime reached
+`MAJORITY_AGREE` with 5/5 validator votes on the final verdict.
+
+This demonstrates the deterministic guard overriding a model false negative. It does
+not mean that five models independently detected the injection.
+
+Patched runtime deployment:
+`0xc9b057bbC26a5E770C962F7B59305Dec0f30e0A8`
+
+Scenario 04 `open_claim` transaction:
+`0xedd30a04ad22fb6aaba93288f70a35e225ca335eb3d17201c6f96d0ae35de90a`
 
 ## Deploying
 
@@ -393,17 +420,32 @@ following, and nothing here is a compliance claim.
 2. **The flag authority is trusted.** Same shape of problem. The local MVP uses a designated authority.
 3. **Evidence quality is the ceiling.** Judging conduct at acceptance is only as good
    as what was recorded at that moment. A fact nobody attested cannot be judged.
-4. **Prompt injection is reduced, not solved.** The semantic boundary narrows the attack surface but does not eliminate it.
-5. **Manufactured good faith.** A patient party can structure a transaction to look
+4. **Prompt injection is reduced, not solved.** Explicit high-signal
+   assessor-directed instructions are rejected deterministically, while the model
+   remains responsible for subtler manipulation. Obfuscated or novel attacks can
+   still evade both layers.
+
+5. **`value_exchanged=no` remains model-sensitive.** Unlike structured checks and
+   structured notice, this is a semantic adverse finding. A model-produced `no` can
+   trigger `RECIPIENT_BEARS` before the no-attestation and stale-attestation gates.
+   Manipulation that induces `no` without triggering the injection defenses therefore
+   remains an MVP risk.
+
+6. **Stored semantic reasoning is leader-derived.** Consensus is over the final
+   economic verdict, not the prose explanation. On branches that append model
+   reasoning, the stored explanation should be treated as an audit aid rather than
+   consensus-validated fact. Fixed deterministic branches use fixed explanations.
+
+7. **Manufactured good faith.** A patient party can structure a transaction to look
    compliant. The attestation and freshness gates raise the cost, because the
    recipient controls neither, but they do not eliminate it. This is true of every
    liability regime.
-6. **Internal balances.** The MVP credits internal contract balances rather than
+8. **Internal balances.** The MVP credits internal contract balances rather than
    transferring real ERC-20 value, because local Studio does not model full EVM
    contract interaction.
-7. **Cost and latency.** Every validator runs its own LLM call on a claim. That is
+9. **Cost and latency.** Every validator runs its own LLM call on a claim. That is
    the price of re-derivation instead of review, and it is the right trade for a
    settlement decision, but it is not free.
-8. **Human review is out of scope for the MVP.** `REVIEW_REQUIRED` deliberately
+10. **Human review is out of scope for the MVP.** `REVIEW_REQUIRED` deliberately
    stops the automatic path. The MVP records that state but does not implement
    the off-chain reviewer or a privileged on-chain override.
