@@ -29,81 +29,9 @@ def _address_from_hex(value: str) -> Address:
     return Address(raw)
 
 
-ENUM_KEYS = (
-    "value_exchanged",
-    "notice_at_acceptance",
-    "agreed_checks_performed",
-    "related_party_indicators",
-)
-ALLOWED = ("yes", "no", "unclear")
-REQUIRED_KEYS = set(ENUM_KEYS) | {"prompt_injection_detected", "reasoning"}
-
-# Fields that must match between leader and validator. `reasoning` is
-# deliberately excluded: two models will word it differently and it never
-# reaches the decision.
-DECISION_KEYS = ENUM_KEYS + ("prompt_injection_detected", "parse_ok")
 
 
-def parse_findings(raw) -> dict:
-    """
-    Strict schema validation.
 
-    The response must parse as a single JSON object on its own. Prose around
-    it is rejected: a model that adds commentary has not followed the output
-    contract. Two normalisations are allowed and nothing else - a markdown
-    fence wrapping the whole response is stripped, since that is a transport
-    artifact, and enum values are lower-cased.
-    """
-    failed = {k: "unclear" for k in ENUM_KEYS}
-    failed["prompt_injection_detected"] = False
-    failed["reasoning"] = ""
-    failed["parse_ok"] = False
-
-    # Studio/GenVM can return native JSON when response_format="json" is
-    # requested. Keep the string path as a defensive fallback and for the
-    # standalone parser tests.
-    if isinstance(raw, dict):
-        parsed = raw
-    elif isinstance(raw, str):
-        text = raw.strip()
-
-        if text.startswith("```"):
-            newline = text.find("\n")
-            if newline == -1:
-                return failed
-            text = text[newline + 1 :]
-            if text.rstrip().endswith("```"):
-                text = text.rstrip()[:-3]
-            text = text.strip()
-
-        try:
-            parsed = json.loads(text)
-        except Exception:
-            return failed
-    else:
-        return failed
-
-    if not isinstance(parsed, dict):
-        return failed
-    if set(parsed.keys()) != REQUIRED_KEYS:
-        return failed
-
-    out = {}
-    for k in ENUM_KEYS:
-        v = parsed[k]
-        if not isinstance(v, str) or v.strip().lower() not in ALLOWED:
-            return failed
-        out[k] = v.strip().lower()
-
-    if not isinstance(parsed["prompt_injection_detected"], bool):
-        return failed
-    if not isinstance(parsed["reasoning"], str):
-        return failed
-
-    out["prompt_injection_detected"] = parsed["prompt_injection_detected"]
-    out["reasoning"] = parsed["reasoning"][:400]
-    out["parse_ok"] = True
-    return out
 
 
 
@@ -114,12 +42,6 @@ SEMANTIC_REQUIRED_KEYS = {
     "reasoning",
 }
 
-SEMANTIC_DECISION_KEYS = (
-    "value_exchanged",
-    "semantic_notice_found",
-    "prompt_injection_detected",
-    "parse_ok",
-)
 
 
 def parse_semantic_findings(raw) -> dict:
