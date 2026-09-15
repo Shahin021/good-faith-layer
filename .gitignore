@@ -1,0 +1,10 @@
+﻿# Python cache
+__pycache__/
+*.py[cod]
+
+# Test/runtime cache
+.pytest_cache/
+artifacts/
+
+# Local regression logs
+regression-*.log

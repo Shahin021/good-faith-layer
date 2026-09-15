@@ -1,6 +1,12 @@
 # v0.1.0
-# { "Depends": "py-genlayer:latest" }
+# { "Depends": "py-genlayer:5jycge4q8k23462jtb0b9fyey1s9qz928sz2nbrd9mg4sxqg2qng" }
+import genlayer as gl
 from genlayer import *
+from genlayer.storage import allow as allow_storage
+
+Address = gl.Address
+TreeMap = gl.storage.TreeMap
+u256 = gl.u256
 from datetime import datetime, timezone
 from dataclasses import dataclass
 import json
@@ -653,7 +659,7 @@ class Payment:
     paid_out: u256
 
 
-class GoodFaithLayer(gl.Contract):
+class GoodFaithLayer(gl.contract.Contract):
     owner: Address
     flag_authority: Address
     attesters: TreeMap[Address, bool]
@@ -791,7 +797,7 @@ class GoodFaithLayer(gl.Contract):
             accepted_at="",
             accepted_at_unix=u256(0),
             attestation_fresh=False,
-            registered_at=gl.message_raw["datetime"],
+            registered_at=datetime.now(timezone.utc).isoformat(),
             status="REGISTERED",
             flag_reason="",
             verdict="",
@@ -851,7 +857,7 @@ class GoodFaithLayer(gl.Contract):
             fresh = 0 <= age <= max_age
 
         payment.recipient_assertions = assertions
-        payment.accepted_at = gl.message_raw["datetime"]
+        payment.accepted_at = datetime.now(timezone.utc).isoformat()
         payment.accepted_at_unix = u256(now_unix)
         payment.attestation_fresh = fresh
         payment.status = "ACCEPTED"
@@ -1088,7 +1094,7 @@ class GoodFaithLayer(gl.Contract):
             # fields that deterministic precedence may make irrelevant.
             return mine_verdict == theirs_verdict
 
-        semantic = gl.vm.run_nondet_unsafe(
+        semantic = gl.vm.run_nondet(
             leader_fn,
             validator_fn,
         )

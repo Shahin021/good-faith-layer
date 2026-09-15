@@ -1,0 +1,4 @@
+[tool.pytest.ini_options]
+markers = [
+    "integration: tests requiring GenLayer Studio (run with gltest)",
+]
