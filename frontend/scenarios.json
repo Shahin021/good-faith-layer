@@ -1,0 +1,83 @@
+{
+  "network": {
+    "label": "Studio Next / rc5",
+    "alias": "studionet",
+    "chainType": "studio_devnet",
+    "rpcUrl": "https://studio-dev.genlayer.com/api",
+    "chainId": 61997
+  },
+  "scenarios": [
+    {
+      "id": "04",
+      "label": "04_injection",
+      "name": "Assessor-directed text in the assertions",
+      "contract": "0xA16cafACc92731D3f305B5fF1b7D7A0CfdAC9573",
+      "paymentId": "scenario-04-rc5",
+      "expectedVerdict": "REVIEW_REQUIRED",
+      "expectedPayout": 0,
+      "gate": 2,
+      "why": "The recipient's assertions carried an explicit instruction aimed at the assessor. On the hosted rc5 run the semantic layer flagged it directly. The claim stops at gate 2 before any other finding is considered.",
+      "recipient": "0xE9E93534821c1516Beb942201f203DcCd60C2690"
+    },
+    {
+      "id": "01",
+      "label": "01_protected",
+      "name": "Clean record, genuine delivery",
+      "contract": "0xA22CC603c84dE378a253fD5245c18A6FB391b1d6",
+      "paymentId": "scenario-01-rc5",
+      "expectedVerdict": "PROTECTED",
+      "expectedPayout": 1000,
+      "gate": 8,
+      "why": "Both required checks attested as performed, no warning at acceptance, no related-party signal, attestation fresh, and the delivery matched the agreed terms. The only path that moves value.",
+      "recipient": "0x2821ad7c70af37D9C237FDB250e35eB4CbDE706b"
+    },
+    {
+      "id": "02",
+      "label": "02_notice_at_acceptance",
+      "name": "A warning was on screen and ignored",
+      "contract": "0x697CA8e82EB5c9b0326a29cC4E164058F026eEF2",
+      "paymentId": "scenario-02-rc5",
+      "expectedVerdict": "RECIPIENT_BEARS",
+      "expectedPayout": 0,
+      "gate": 5,
+      "why": "The attester recorded a displayed HIGH RISK warning before acceptance. Structured notice settles the verdict, so the models could differ on a lower-level semantic field and still reach the same economic result.",
+      "recipient": "0xaEC669853ae83FbfC3a99E68b1952373AF93181F"
+    },
+    {
+      "id": "05",
+      "label": "05_unattested",
+      "name": "A plausible account nobody can check",
+      "contract": "0xFb0B3eE21177585c62c44511138c41E8749d8E7f",
+      "paymentId": "scenario-05-rc5",
+      "expectedVerdict": "REVIEW_REQUIRED",
+      "expectedPayout": 0,
+      "gate": 6,
+      "why": "The recipient describes a clean transaction in convincing detail. No attester ever recorded anything, so nothing in that account can be checked against anything. It can never reach a payout.",
+      "recipient": "0x6c1350DeFE4391Ed24575ae27221B6EfA42F8548"
+    },
+    {
+      "id": "06",
+      "label": "06_stale_attestation",
+      "name": "Real evidence, recorded too early",
+      "contract": "0x14B08Eeb9f081D12cb43FBC36CDe15bA786c9a07",
+      "paymentId": "scenario-06-rc5",
+      "expectedVerdict": "REVIEW_REQUIRED",
+      "expectedPayout": 0,
+      "gate": 7,
+      "why": "Every structured finding is clean and the attestation is genuine. The policy TTL was 60 seconds and acceptance came 65 seconds after attestation, so freshness was the intended blocker. A risk snapshot is a photograph, not a standing fact.",
+      "recipient": "0x910E5619259e81b32AdfE6f4569A1B1D619318dD"
+    },
+    {
+      "id": "03",
+      "label": "03_ambiguous",
+      "name": "Every number under its limit, still not enough",
+      "contract": "0xEB166d75995e0e7ae5103dbC1F7e55D0012aFDee",
+      "paymentId": "scenario-03-rc5",
+      "expectedVerdict": "REVIEW_REQUIRED",
+      "expectedPayout": 0,
+      "gate": 9,
+      "why": "Risk score 22 against a warning threshold of 40, so no warning fires. But delivery is partial and identity verification is recorded as incomplete, so the required checks resolve to unclear and nothing establishes the standard.",
+      "recipient": "0x236F6f5522C2B2c573D8B452B5Db0C2F7bf87cc1"
+    }
+  ]
+}

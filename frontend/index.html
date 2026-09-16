@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Good Faith Layer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;450;500;600&display=swap">
+<style>
+  :root{
+    --ink:#111721;
+    --ink-2:#19212D;
+    --panel:#1E2735;
+    --line:#2B3747;
+    --paper:#E9E5DA;
+    --paper-line:#C9C2B2;
+    --paper-ink:#2A2721;
+    --semantic:#9B93D6;
+    --semantic-bg:rgba(139,131,205,.10);
+    --semantic-line:rgba(139,131,205,.35);
+    --guard:#E0A33A;
+    --protected:#59A37B;
+    --bears:#C97A63;
+    --review:#8592A6;
+    --fg:#E8ECF2;
+    --fg-dim:#93A0B2;
+    --fg-faint:#64718A;
+    --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--fg);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    html{scroll-behavior:auto}
+  }
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+  section{padding:76px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:none}
+
+  h1,h2,h3{
+    margin:0;font-weight:650;letter-spacing:-.022em;line-height:1.15;
+    text-wrap:balance;
+  }
+  p{text-wrap:pretty}
+  h2{font-size:31px;font-weight:600;margin-bottom:8px}
+  h3{font-size:17px;letter-spacing:-.01em}
+  p{margin:0}
+  .lede{color:var(--fg-dim);font-size:16px;line-height:1.6;max-width:62ch;margin-top:10px}
+  .mono{font-family:var(--mono);font-size:12.5px;letter-spacing:-.01em}
+
+  /* ---------- hero ---------- */
+  header{padding:76px 0 8px;position:relative;overflow:hidden}
+  .hero-inner{position:relative;z-index:1;max-width:800px}
+  .mascot{
+    position:absolute;bottom:-6px;
+    left:50%;margin-left:236px;          /* anchored to the content column */
+    height:368px;width:auto;z-index:0;pointer-events:none;
+    opacity:.62;
+    filter:saturate(.78) contrast(.95);
+    -webkit-mask-image:linear-gradient(to bottom,#000 62%,transparent 98%);
+    mask-image:linear-gradient(to bottom,#000 62%,transparent 98%);
+  }
+  @media(max-width:1340px){.mascot{height:300px;margin-left:172px;opacity:.46}}
+  @media(max-width:1040px){.mascot{display:none}}
+  .wordmark{
+    font-size:13.5px;color:var(--fg-faint);font-family:var(--mono);
+    letter-spacing:.03em;margin-bottom:30px;
+    display:flex;align-items:center;gap:11px;flex-wrap:wrap;
+  }
+  .gl-logo{
+    height:25px;width:auto;display:block;
+    filter:invert(1);
+    mix-blend-mode:screen;
+    opacity:1;
+  }
+  .wordmark .built{
+    color:var(--fg-dim);border:1px solid var(--line);
+    border-radius:2px;padding:3px 9px;font-size:11px;
+  }
+  .gl-mark{
+    height:30px;width:auto;flex:none;align-self:center;
+    filter:invert(1);
+    mix-blend-mode:screen;
+    opacity:.34;
+  }
+  h1{
+    font-size:clamp(36px,4.8vw,56px);max-width:23ch;
+    font-weight:600;letter-spacing:-.03em;line-height:1.08;
+  }
+  .hero-sub{
+    margin-top:24px;font-size:19px;line-height:1.6;color:var(--fg);
+    max-width:50ch;
+  }
+  .hero-sub2{
+    margin-top:14px;font-size:16.5px;line-height:1.62;color:var(--fg-dim);
+    max-width:52ch;
+  }
+  .hero-sub b{color:var(--fg);font-weight:600}
+
+  .badges{
+    display:inline-flex;flex-wrap:wrap;margin-top:30px;
+    border:1px solid var(--line);border-radius:2px;
+  }
+  .badge{
+    font-family:var(--mono);font-size:11.5px;color:var(--fg-faint);
+    padding:7px 14px;border-left:1px solid var(--line);
+    white-space:nowrap;
+  }
+  .badge:first-child{border-left:none}
+  .badge b{color:var(--fg);font-weight:500}
+
+  /* ---------- finding callout ---------- */
+  .finding{
+    margin-top:44px;display:grid;grid-template-columns:4px 1fr;
+    background:linear-gradient(90deg,rgba(224,163,58,.07),transparent 62%);
+  }
+  .finding-bar{background:var(--guard)}
+  .finding-body{padding:22px 26px}
+  .finding-label{
+    font-family:var(--mono);font-size:11.5px;color:var(--guard);margin-bottom:9px;
+  }
+  .finding-body p{font-size:17px;line-height:1.62;max-width:62ch}
+  .finding-body code{
+    font-family:var(--mono);font-size:14.5px;color:var(--guard);
+    background:rgba(224,163,58,.10);padding:1px 5px;border-radius:2px;
+  }
+
+  /* ---------- timeline ---------- */
+  .rail{position:relative;margin-top:34px;padding-top:26px}
+  .rail:before{
+    content:"";position:absolute;top:5px;left:0;right:0;height:1px;background:var(--line);
+  }
+  .rail-row{display:grid;grid-template-columns:repeat(6,1fr);gap:20px;align-items:start}
+  .stop{position:relative}
+  .stop:before{
+    content:"";position:absolute;top:-26px;left:0;width:7px;height:7px;
+    border-radius:50%;background:var(--ink);border:1.5px solid var(--fg-faint);
+  }
+  .stop.turn:before{background:var(--guard);border-color:var(--guard)}
+  .stop-n{font-family:var(--mono);font-size:11px;color:var(--fg-faint)}
+  .stop-t{font-size:13.5px;margin-top:4px;line-height:1.42;max-width:20ch}
+  .stop.turn .stop-t{color:var(--guard)}
+
+  /* ---------- architecture ---------- */
+  .arch{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:34px;align-items:stretch}
+
+  .tier{border-radius:3px;padding:26px 26px 22px;display:flex;flex-direction:column;min-height:100%}
+  .tier ul{flex:1 1 auto}
+  .tier-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:4px}
+  .tier-kind{font-family:var(--mono);font-size:11px}
+  .tier p.note{font-size:13.5px;line-height:1.5;margin-top:10px}
+  .tier ul{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-direction:column;gap:0}
+  .tier li{font-size:14px;padding:9px 0;display:flex;gap:10px;align-items:flex-start}
+
+  /* deterministic tier: rendered on paper, because it is evidence of fact */
+  .tier.det{background:var(--paper);color:var(--paper-ink)}
+  .tier.det h3{color:var(--paper-ink)}
+  .tier.det .tier-kind{color:#7A7261}
+  .tier.det p.note{color:#5C5648}
+  .tier.det li{border-top:1px solid var(--paper-line)}
+  .tier.det li:first-child{border-top:none}
+  .tier.det .dot{color:#8A8270;font-family:var(--mono);font-size:12px;line-height:1.5}
+
+  /* semantic tier: translucent, because it is interpretation */
+  .tier.sem{background:var(--semantic-bg);border:1px solid var(--semantic-line)}
+  .tier.sem .tier-kind{color:var(--semantic)}
+  .tier.sem p.note{color:var(--fg-dim)}
+  .tier.sem li{border-top:1px solid rgba(139,131,205,.18);color:var(--fg)}
+  .tier.sem li:first-child{border-top:none}
+  .tier.sem .dot{color:var(--semantic);font-family:var(--mono);font-size:12px;line-height:1.5}
+
+  .guardrail{
+    margin-top:auto;padding-top:16px;font-size:13px;line-height:1.5;color:var(--fg-dim);
+  }
+  .tier.det .guardrail{color:#5C5648;border-top:1px solid var(--paper-line);margin-top:18px}
+  .tier.sem .guardrail{border-top:1px solid rgba(139,131,205,.18);margin-top:18px}
+
+  .merge{
+    margin-top:20px;border:1px solid var(--line);border-radius:3px;
+    padding:22px 26px;display:flex;flex-wrap:wrap;gap:20px 32px;
+    align-items:center;justify-content:space-between;
+  }
+  .fall{
+    margin-top:14px;border:1px solid var(--line);border-radius:3px;
+    padding:20px 26px;display:grid;grid-template-columns:auto 1fr;
+    gap:26px 34px;align-items:center;
+  }
+  .fall-steps{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .fall-steps .st{
+    font-family:var(--mono);font-size:12px;color:var(--fg);
+    border:1px solid var(--line);border-radius:2px;padding:7px 13px;white-space:nowrap;
+  }
+  .fall-steps .ar{font-family:var(--mono);font-size:12px;color:var(--fg-faint)}
+  .fall-note{font-size:13.5px;color:var(--fg-dim);line-height:1.55;max-width:48ch}
+  .fall-note b{color:var(--fg);font-weight:600}
+  @media(max-width:760px){.fall{grid-template-columns:1fr;gap:16px}}
+  .merge-label{font-size:14.5px;color:var(--fg-dim);max-width:46ch;flex:1 1 340px}
+  .merge-label b{color:var(--fg);font-weight:600}
+  .verdicts{display:flex;gap:8px;flex-wrap:wrap;flex:0 0 auto}
+  .v-chip{
+    font-family:var(--mono);font-size:12px;padding:6px 11px;border-radius:2px;
+    border:1px solid currentColor;
+  }
+  .v-protected{color:var(--protected)}
+  .v-bears{color:var(--bears)}
+  .v-review{color:var(--review)}
+
+  /* ---------- gates + scenarios ---------- */
+  .split{display:grid;grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr);gap:44px;margin-top:34px;align-items:start}
+
+  .gates{border:1px solid var(--line);border-radius:3px;overflow:hidden}
+  .gate{
+    display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:14px;align-items:baseline;
+    padding:12px 16px;border-top:1px solid var(--line);
+    font-size:13.5px;line-height:1.4;transition:background .18s,opacity .18s;
+  }
+  .gate:first-child{border-top:none}
+  .gate .gn{font-family:var(--mono);font-size:11px;color:var(--fg-faint)}
+  .gate .gt{color:var(--fg-dim)}
+  .gate .go{font-family:var(--mono);font-size:11px;color:var(--fg-faint)}
+  .gate.passed{opacity:.32}
+  .gate.passed .gt:after{content:" — passed";color:var(--fg-faint)}
+  .gate.fired{background:rgba(255,255,255,.05)}
+  .gate.fired .gn{color:var(--fg)}
+  .gate.fired .gt{color:var(--fg);font-weight:550}
+  .gate.unreached{opacity:.16}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:stretch}
+  .card{
+    text-align:left;background:transparent;color:inherit;font:inherit;
+    border:1px solid var(--line);border-radius:3px;padding:14px 15px;cursor:pointer;
+    transition:border-color .18s,background .18s;
+    display:flex;flex-direction:column;
+  }
+  .card .card-foot{margin-top:auto;padding-top:10px}
+  .card:hover{border-color:var(--fg-faint)}
+  .card:focus-visible{outline:2px solid var(--semantic);outline-offset:2px}
+  .card[aria-pressed="true"]{border-color:var(--fg);background:rgba(255,255,255,.045)}
+  .card-id{font-family:var(--mono);font-size:11.5px;color:var(--fg-faint)}
+  .card-name{font-size:14px;margin-top:3px;line-height:1.3}
+  .card-foot{display:flex;align-items:center;gap:7px;margin-top:9px}
+  .tick{width:5px;height:5px;border-radius:50%;flex:none}
+  .tick.rt{background:var(--protected)}
+  .tick.local{background:var(--fg-faint)}
+  .card-ver{font-family:var(--mono);font-size:10.5px;color:var(--fg-faint)}
+
+  .detail{border:1px solid var(--line);border-radius:3px;padding:20px 22px;margin-top:14px}
+  .detail-top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+  .detail-verdict{font-family:var(--mono);font-size:15px}
+  .detail-pay{font-family:var(--mono);font-size:12px;color:var(--fg-dim)}
+  .detail-why{font-size:14px;color:var(--fg-dim);margin-top:12px;line-height:1.55;max-width:60ch}
+  .detail-meta{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:11.5px;color:var(--fg-faint);
+    display:flex;flex-direction:column;gap:5px;word-break:break-all}
+  .detail-meta span{color:var(--fg-dim)}
+
+  /* ---------- live verifier ---------- */
+  .rpcbar{
+    display:flex;flex-wrap:wrap;gap:10px 26px;align-items:center;
+    margin-top:26px;padding:13px 18px;
+    border:1px solid var(--line);border-radius:3px;
+    font-family:var(--mono);font-size:11.5px;color:var(--fg-faint);
+  }
+  .rpcbar .val{color:var(--fg-dim)}
+  .conn{display:flex;align-items:center;gap:7px;margin-left:auto}
+  .conn .led{width:7px;height:7px;border-radius:50%;background:var(--fg-faint);flex:none}
+  .conn.idle .led{background:var(--fg-faint)}
+  .conn.ok .led{background:var(--protected)}
+  .conn.bad .led{background:var(--bears)}
+  .conn.busy .led{background:var(--guard)}
+  .conn.ok .txt{color:var(--protected)}
+  .conn.bad .txt{color:var(--bears)}
+  .conn.busy .txt{color:var(--guard)}
+
+  .vtools{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;align-items:center}
+  .btn{
+    font:inherit;font-size:13px;color:var(--fg);background:transparent;
+    border:1px solid var(--fg-faint);border-radius:2px;padding:9px 18px;cursor:pointer;
+    transition:background .16s,border-color .16s;font-family:var(--mono);
+  }
+  .btn:hover:not(:disabled){background:rgba(255,255,255,.06)}
+  .btn:disabled{opacity:.4;cursor:default}
+  .btn:focus-visible{outline:2px solid var(--semantic);outline-offset:2px}
+  .btn.primary{border-color:var(--protected);color:var(--protected)}
+  .btn.primary:hover:not(:disabled){background:rgba(89,163,123,.1)}
+  .vhint{font-size:12.5px;color:var(--fg-faint);line-height:1.5;max-width:56ch}
+  .vhint b{color:var(--fg-dim);font-weight:500}
+
+  .vpanel{
+    margin-top:18px;border:1px solid var(--line);border-radius:3px;
+    display:grid;grid-template-columns:1fr 1fr;gap:0;
+  }
+  .vside{padding:20px 24px}
+  .vside + .vside{border-left:1px solid var(--line)}
+  .vside.live{background:rgba(255,255,255,.028)}
+  .vk{font-family:var(--mono);font-size:11px;color:var(--fg-faint);margin-bottom:14px}
+  .vrow{
+    display:flex;gap:10px;align-items:baseline;
+    font-family:var(--mono);font-size:12.5px;padding:6px 0;
+  }
+  .vrow .n{color:var(--fg-faint);flex:0 1 auto}
+  .vrow:after{content:"";flex:1 1 auto;border-bottom:1px dotted var(--line);transform:translateY(-3px);min-width:8px}
+  .vrow .v{flex:none;color:var(--fg);white-space:nowrap;order:2}
+  .vrow .v.pending{color:var(--fg-faint)}
+  .vrow .v.err{color:var(--bears);white-space:normal;text-align:right;max-width:26ch}
+  .vmeta{
+    margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:10.5px;color:var(--fg-faint);
+    overflow-wrap:anywhere;line-height:1.7;
+  }
+  .vmeta span{color:var(--fg-dim)}
+  .vstamp{
+    margin-top:16px;padding:9px 14px;border-radius:2px;
+    font-family:var(--mono);font-size:12.5px;display:inline-block;
+  }
+  .vstamp.match{color:var(--protected);border:1px solid var(--protected)}
+  .vstamp.mismatch{color:var(--bears);border:1px solid var(--bears)}
+  .vstamp.fail{color:var(--guard);border:1px solid var(--guard)}
+  .vstamp.idle{color:var(--fg-faint);border:1px solid var(--line)}
+
+  .vall{margin-top:18px;border:1px solid var(--line);border-radius:3px;display:none}
+  .vall.on{display:block}
+  .vall-row{
+    display:grid;grid-template-columns:1fr auto auto;gap:18px;align-items:baseline;
+    padding:11px 18px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:12px;
+  }
+  .vall-row:first-child{border-top:none}
+  .vall-row .s{color:var(--fg-dim)}
+  .vall-row .r{color:var(--fg-faint)}
+  .vall-row .m.ok{color:var(--protected)}
+  .vall-row .m.no{color:var(--bears)}
+  .vall-row .m.er{color:var(--guard)}
+  .vall-sum{
+    padding:13px 18px;border-top:1px solid var(--line);
+    background:rgba(255,255,255,.03);font-family:var(--mono);font-size:12.5px;color:var(--fg);
+  }
+
+  /* ---------- injection benchmark ---------- */
+  .inj{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:34px;
+    border:1px solid var(--line);border-radius:3px;overflow:hidden}
+  .inj-half{padding:24px 26px}
+  .inj-half + .inj-half{border-left:1px solid var(--line)}
+  .inj-half.sem{background:var(--semantic-bg)}
+  .inj-k{font-family:var(--mono);font-size:11px;color:var(--fg-faint);margin-bottom:11px}
+  .inj-n{font-size:27px;letter-spacing:-.022em;line-height:1.2}
+  .inj-half.det .inj-n b{color:var(--guard);font-weight:600}
+  .inj-half.sem .inj-n b{color:var(--semantic);font-weight:600}
+  .inj-d{font-size:13.5px;color:var(--fg-dim);line-height:1.55;margin-top:10px;max-width:42ch}
+  .bypass{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);
+    display:flex;flex-wrap:wrap;gap:7px}
+  .bypass span{
+    font-family:var(--mono);font-size:11px;color:var(--fg-dim);
+    border:1px solid var(--line);border-radius:2px;padding:4px 9px;
+  }
+
+  /* ---------- two-run comparison ---------- */
+  .runs{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:34px}
+  .run{border:1px solid var(--line);border-radius:3px;padding:24px 26px}
+  .run.hosted{background:rgba(89,163,123,.05)}
+  .run-k{font-family:var(--mono);font-size:11px;color:var(--fg-faint);margin-bottom:12px}
+  .run h3{font-size:16px;margin-bottom:14px}
+  .run.hosted h3{color:var(--protected)}
+  .run.hist h3{color:var(--guard)}
+  .run-p{font-size:14px;color:var(--fg-dim);line-height:1.6;margin-top:14px;max-width:46ch}
+
+  /* ---------- benchmark strip ---------- */
+  .bench{
+    display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:34px;
+    border:1px solid var(--line);border-radius:3px;overflow:hidden;
+  }
+  .bench-half{padding:22px 26px}
+  .bench-half + .bench-half{border-left:1px solid var(--line)}
+  .bench-half.normal{background:rgba(89,163,123,.06)}
+  .bench-k{font-family:var(--mono);font-size:11px;color:var(--fg-faint);margin-bottom:10px}
+  .bench-n{font-size:21px;letter-spacing:-.02em;line-height:1.3}
+  .bench-half.normal .bench-n b{color:var(--protected);font-weight:600}
+  .bench-d{font-size:13.5px;color:var(--fg-dim);line-height:1.55;margin-top:9px;max-width:44ch}
+  .bench-tx{
+    font-family:var(--mono);font-size:10.5px;color:var(--fg-faint);
+    margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
+    overflow-wrap:anywhere;line-height:1.6;
+  }
+  .bench-tx span{color:var(--fg-dim)}
+
+  /* ---------- adoption ---------- */
+  .adopt{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:44px;margin-top:34px;align-items:start}
+  .maps{border:1px solid var(--line);border-radius:3px;overflow:hidden}
+  .map-head{
+    display:grid;grid-template-columns:1fr 18px 1fr;gap:14px;
+    padding:11px 18px;background:rgba(255,255,255,.03);
+    font-family:var(--mono);font-size:10.5px;color:var(--fg-faint);
+  }
+  .map-row{
+    display:grid;grid-template-columns:1fr 18px 1fr;gap:14px;align-items:center;
+    padding:13px 18px;border-top:1px solid var(--line);font-size:13.5px;line-height:1.4;
+  }
+  .map-row .have{color:var(--fg-dim)}
+  .map-row .arrow{color:var(--fg-faint);font-family:var(--mono);font-size:12px;text-align:center}
+  .map-row .role{color:var(--fg)}
+  .adopt-note{font-size:14.5px;line-height:1.6;color:var(--fg-dim);max-width:46ch}
+  .adopt-note + .adopt-note{margin-top:16px}
+  .adopt-note b{color:var(--fg);font-weight:600}
+  .adopt-flow{
+    margin-top:22px;padding-top:18px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:11.5px;color:var(--fg-faint);line-height:2;
+  }
+  .adopt-flow b{color:var(--fg-dim);font-weight:400}
+
+  /* ---------- test coverage ---------- */
+  .cov{border:1px solid var(--line);border-radius:3px;overflow:hidden;margin-top:30px}
+  .cov-row{
+    display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:28px;
+    padding:15px 20px;border-top:1px solid var(--line);align-items:baseline;
+  }
+  .cov-row:first-child{border-top:none}
+  .cov-row .area{font-size:14px;color:var(--fg)}
+  .cov-row .prot{font-size:13.5px;color:var(--fg-dim);line-height:1.5}
+
+  /* ---------- spotlight ---------- */
+  .chain{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:34px;
+    border:1px solid var(--line);border-radius:3px;overflow:hidden}
+  .link{padding:24px 22px;border-left:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
+  .link:first-child{border-left:none}
+  .link-n{font-family:var(--mono);font-size:11px;color:var(--fg-faint);margin-bottom:12px}
+  .link h3{font-size:15px;margin-bottom:10px}
+  .link.input{background:rgba(201,122,99,.07)}
+  .link.input h3{color:var(--bears)}
+  .link.model{background:var(--semantic-bg)}
+  .link.model h3{color:var(--semantic)}
+  .link.guard{background:rgba(224,163,58,.09)}
+  .link.guard h3{color:var(--guard)}
+  .link.out{background:rgba(255,255,255,.035)}
+
+  .inject{
+    font-family:var(--mono);font-size:11.5px;line-height:1.65;color:var(--bears);
+    word-break:break-word;
+    background:rgba(0,0,0,.28);border:1px solid rgba(201,122,99,.3);
+    border-radius:2px;padding:11px 12px;
+  }
+  .kv{display:flex;flex-direction:column;gap:7px;font-family:var(--mono);font-size:11.5px}
+  .kv div{display:flex;gap:8px;align-items:baseline}
+  .kv .k{min-width:0;overflow-wrap:anywhere;flex:0 1 auto}
+  .kv div:after{
+    content:"";flex:1 1 auto;order:1;
+    border-bottom:1px dotted var(--line);
+    transform:translateY(-3px);min-width:8px;
+  }
+  .kv .t,.kv .f,.kv .u{order:2;flex:none;white-space:nowrap}
+  .kv .k{color:var(--fg-faint)}
+  .kv .t{color:var(--protected)}
+  .kv .f{color:var(--bears)}
+  .kv .u{color:var(--fg-dim)}
+  .link .quote{font-size:12.5px;color:var(--fg-dim);line-height:1.5;margin-top:12px;font-style:italic}
+  .link .says{font-size:13.5px;line-height:1.5;color:var(--fg)}
+  .link .foot{margin-top:auto;padding-top:14px;font-size:12px;color:var(--fg-faint);line-height:1.45}
+
+  .honest{
+    margin-top:14px;border:1px solid var(--line);border-radius:3px;
+    padding:16px 20px;font-size:13.5px;color:var(--fg-dim);line-height:1.55;
+  }
+  .honest b{color:var(--fg);font-weight:600}
+
+  /* ---------- caveats ---------- */
+  .caveats{display:grid;grid-template-columns:1fr 1fr;gap:0 52px;margin-top:32px}
+  .caveat{padding:18px 0;border-top:1px solid var(--line)}
+  .caveat h3{font-size:14.5px;margin-bottom:6px}
+  .caveat p{font-size:13.5px;color:var(--fg-dim);line-height:1.55;max-width:52ch}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:40px 0 64px}
+  .ev{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:28px 34px}
+  .ev-item{font-family:var(--mono);font-size:11px;line-height:1.75}
+  .ev-item .k{
+    color:var(--fg-faint);display:block;margin-bottom:4px;
+    font-size:10.5px;
+  }
+  .ev-item .v{color:var(--fg-dim);display:block;overflow-wrap:anywhere}
+  .disclaim{margin-top:32px;font-size:13px;color:var(--fg-faint);max-width:66ch;line-height:1.55}
+
+  @media(max-width:980px){
+    .adopt{grid-template-columns:1fr;gap:30px}
+    .bench{grid-template-columns:1fr}
+    .bench-half + .bench-half{border-left:none;border-top:1px solid var(--line)}
+  }
+  @media(max-width:860px){
+    .arch,.split,.caveats,.cards{grid-template-columns:1fr}
+    .cov-row{grid-template-columns:1fr;gap:6px}
+    .map-head,.map-row{grid-template-columns:1fr 16px 1fr;gap:10px;font-size:12.5px}
+    .chain{grid-template-columns:1fr}
+    .link{border-left:none;border-top:1px solid var(--line)}
+    .link:first-child{border-top:none}
+    .rail-row{grid-template-columns:1fr 1fr;gap:18px 14px}
+    .rail:before{display:none}
+    .stop:before{display:none}
+    .merge{grid-template-columns:1fr}
+    .verdicts{justify-content:flex-start}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="genlayer-cat.png" alt="" class="mascot" onerror="this.style.display='none'">
+  <div class="wrap">
+   <div class="hero-inner">
+    <div class="wordmark">
+      <img src="genlayer-logo.png" alt="GenLayer" class="gl-logo"
+           onerror="this.style.display='none'">
+      <span>Good Faith Layer</span>
+      <span class="built">built on GenLayer</span>
+    </div>
+    <h1>Who eats the loss when the money goes bad later?</h1>
+    <p class="hero-sub"><b>Good Faith Layer decides who should absorb a payment loss based on what was reasonably knowable when the payment was accepted.</b></p>
+    <p class="hero-sub2">A payment settles cleanly. Days later the funds trace upstream to something illicit and an exchange restricts them. The work is already done, and the recipient is holding money they cannot move.</p>
+
+    <div class="badges">
+      <span class="badge"><b>123 / 123</b> deterministic regression checks</span>
+      <span class="badge"><b>6 / 6</b> hosted Studio Next / rc5 core scenarios</span>
+      <span class="badge"><b>4 / 4</b> hosted semantic detection on guard bypasses</span>
+    </div>
+
+    <div class="finding">
+      <div class="finding-bar"></div>
+      <div class="finding-body">
+        <div class="finding-label">What you can check yourself</div>
+        <p>All six scenarios ran on the hosted Studio Next / rc5 runtime, each as its own fresh deployment, and each produced its intended economic outcome. The verifier below reads those six live contracts and compares what they actually hold against what this page claims.</p>
+      </div>
+    </div>
+   </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Where the loss appears</h2>
+    <p class="lede">Nothing is wrong at the moment of payment. The problem arrives afterwards, and by then the recipient is the one holding restricted funds.</p>
+
+    <div class="rail">
+      <div class="rail-row">
+        <div class="stop"><div class="stop-n">1</div><div class="stop-t">Payer registers the payment against a policy</div></div>
+        <div class="stop"><div class="stop-n">2</div><div class="stop-t">Attester records the risk snapshot and required checks</div></div>
+        <div class="stop"><div class="stop-n">3</div><div class="stop-t">Recipient accepts — this is T0</div></div>
+        <div class="stop turn"><div class="stop-n">4</div><div class="stop-t">Upstream provenance risk surfaces later</div></div>
+        <div class="stop"><div class="stop-n">5</div><div class="stop-t">Recipient opens a claim</div></div>
+        <div class="stop"><div class="stop-n">6</div><div class="stop-t">Liability is allocated</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Two kinds of evidence, held apart</h2>
+    <p class="lede">Facts with deterministic semantics are resolved in code before the model is called, and the model cannot rewrite those findings. GenLayer is spent only on evidence that still requires interpretation. The two surfaces below are drawn differently on purpose: one is a record, the other is a reading of it.</p>
+
+    <div class="arch">
+      <div class="tier det">
+        <div class="tier-head">
+          <h3>Resolved in code</h3>
+          <span class="tier-kind">evidence of fact</span>
+        </div>
+        <p class="note">Derived in contract code from the structured attestation, from lifecycle state, and from narrow high-signal text checks. The model cannot produce, alter or override any of these findings.</p>
+        <ul>
+          <li><span class="dot">·</span><span>Whether each required check was performed — an adverse result still counts as performed</span></li>
+          <li><span class="dot">·</span><span>Related-party status from the structured relationship check</span></li>
+          <li><span class="dot">·</span><span>Structured notice: a displayed warning at acceptance</span></li>
+          <li><span class="dot">·</span><span>Whether an attestation exists, and whether it was fresh at T0</span></li>
+          <li><span class="dot">·</span><span>High-signal assessor-directed instruction guard</span></li>
+          <li><span class="dot">·</span><span>Settlement waterfall and reserve sufficiency</span></li>
+        </ul>
+        <p class="guardrail">Silence is never proof. Missing, invalid or incomplete evidence resolves to <em>unclear</em>, never to a convenient yes or no.</p>
+      </div>
+
+      <div class="tier sem">
+        <div class="tier-head">
+          <h3>Judged by validators</h3>
+          <span class="tier-kind">interpretation</span>
+        </div>
+        <p class="note">Each validator independently assesses only what is left after the structured facts are resolved, and returns four fields. The call runs through <span class="mono">gl.vm.run_nondet</span>, so every validator derives its own answer rather than reviewing the leader's.</p>
+        <ul>
+          <li><span class="dot">·</span><span>Whether the attested delivery actually satisfies the agreed terms</span></li>
+          <li><span class="dot">·</span><span>Adverse notice buried in free-text context or warning copy</span></li>
+          <li><span class="dot">·</span><span>An admission against interest inside the recipient's own account</span></li>
+          <li><span class="dot">·</span><span>Text addressed to the assessor rather than describing the payment</span></li>
+        </ul>
+        <p class="guardrail">Semantic notice is deliberately one-way. The model can raise notice to <em>yes</em>; it can never manufacture a clean <em>no</em> from silence.</p>
+      </div>
+    </div>
+
+    <div class="merge">
+      <p class="merge-label">Both layers merge, then one frozen decision rule runs. <b>Validators compare the resulting verdict</b>, not the model fields behind it.</p>
+      <div class="verdicts">
+        <span class="v-chip v-protected">PROTECTED</span>
+        <span class="v-chip v-bears">RECIPIENT_BEARS</span>
+        <span class="v-chip v-review">REVIEW_REQUIRED</span>
+      </div>
+    </div>
+
+    <div class="fall">
+      <div class="fall-steps">
+        <span class="st">payer bond</span><span class="ar">&rarr;</span>
+        <span class="st">protection pool</span><span class="ar">&rarr;</span>
+        <span class="st">platform bond</span>
+      </div>
+      <p class="fall-note"><b>Only PROTECTED moves value</b>, and it draws in that order &mdash; the payer introduced the funds, so their bond absorbs first. There is no partial settlement: if the reserves cannot cover the full amount, the transaction reverts and the claim stays open rather than paying out short.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Where each scenario stops</h2>
+    <p class="lede">The order is frozen and load-bearing. Pick a scenario to see which gate fired and why, then verify that same deployment live in the next section. Only the PROTECTED gate pays anything out.</p>
+
+    <div class="split">
+      <div>
+        <div class="gates" id="gates">
+          <div class="gate" data-g="1"><span class="gn">1</span><span class="gt">Semantic output malformed</span><span class="go">review</span></div>
+          <div class="gate" data-g="2"><span class="gn">2</span><span class="gt">Assessor-directed text detected</span><span class="go">review</span></div>
+          <div class="gate" data-g="3"><span class="gn">3</span><span class="gt">Related-party indicators present</span><span class="go">review</span></div>
+          <div class="gate" data-g="4"><span class="gn">4</span><span class="gt">No genuine value exchanged</span><span class="go">recipient</span></div>
+          <div class="gate" data-g="5"><span class="gn">5</span><span class="gt">Notice existed at acceptance</span><span class="go">recipient</span></div>
+          <div class="gate" data-g="6"><span class="gn">6</span><span class="gt">No attestation recorded</span><span class="go">review</span></div>
+          <div class="gate" data-g="7"><span class="gn">7</span><span class="gt">Attestation stale at acceptance</span><span class="go">review</span></div>
+          <div class="gate" data-g="8"><span class="gn">8</span><span class="gt">Value yes, no notice, checks attested, fresh</span><span class="go">protected</span></div>
+          <div class="gate" data-g="9"><span class="gn">9</span><span class="gt">Anything else</span><span class="go">review</span></div>
+        </div>
+        <p class="honest" style="margin-top:14px">A related-party signal deliberately outranks an adverse finding, so a suspected colluding recipient is never paid automatically. A missing or stale attestation blocks a payout but does not erase an adverse fact established independently.</p>
+      </div>
+
+      <div>
+        <div class="cards" id="cards"></div>
+        <div class="detail" id="detail"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Verify it yourself</h2>
+    <p class="lede">Each scenario ran as its own fresh deployment on the hosted runtime, and each was confirmed by a GenVM execution result of <span class="mono">FINISHED_WITH_RETURN</span> rather than by the outer receipt alone. Nothing below is read from this page. Pick one, press verify, and the browser queries that contract directly and compares what it holds against what this page claims.</p>
+
+    <div class="rpcbar">
+      <span>network <span class="val" id="netLabel">&mdash;</span></span>
+      <span>rpc <span class="val" id="netRpc">&mdash;</span></span>
+      <span>sdk <span class="val" id="sdkSrc">&mdash;</span></span>
+      <span class="conn" id="conn"><span class="led"></span><span class="txt">Connecting</span></span>
+    </div>
+
+    <div class="vtools">
+      <button class="btn primary" id="btnOne" type="button">Verify this scenario</button>
+      <button class="btn" id="btnAll" type="button">Verify all 6</button>
+      <span class="vhint" id="vhint"><b>Verify all 6</b> reads the two fields the match depends on, <span class="mono">get_verdict</span> and <span class="mono">get_paid_out</span>. <b>Verify this scenario</b> also reads status, claim balance and protection pool for context.</span>
+    </div>
+
+    <div class="vpanel">
+      <div class="vside">
+        <div class="vk">what this page claims</div>
+        <div class="vrow"><span class="n">verdict</span><span class="v" id="expV">&mdash;</span></div>
+        <div class="vrow"><span class="n">paid_out</span><span class="v" id="expP">&mdash;</span></div>
+        <div class="vmeta">
+          contract<br><span id="expC">&mdash;</span><br>
+          payment_id<br><span id="expId">&mdash;</span><br>
+          recipient<br><span id="expR">&mdash;</span>
+        </div>
+      </div>
+      <div class="vside live">
+        <div class="vk">what the contract holds</div>
+        <div class="vrow"><span class="n">verdict</span><span class="v pending" id="liveV">not read yet</span></div>
+        <div class="vrow"><span class="n">paid_out</span><span class="v pending" id="liveP">not read yet</span></div>
+        <div class="vrow"><span class="n">status</span><span class="v pending" id="liveS">not read yet</span></div>
+        <div class="vrow"><span class="n">claim_balance</span><span class="v pending" id="liveClaim">not read yet</span></div>
+        <div class="vrow"><span class="n">protection_pool</span><span class="v pending" id="livePool">not read yet</span></div>
+        <div class="vstamp idle" id="stamp">awaiting verification</div>
+      </div>
+    </div>
+
+    <div class="vall" id="vall"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Coverage cases, not traffic statistics</h2>
+    <p class="lede">Five of the six scenarios above deliberately exercise failure and boundary conditions. They are closer to crash tests than to a sample of normal payments, so a separate benchmark was run to show the successful path is repeatable.</p>
+
+    <div class="bench">
+      <div class="bench-half">
+        <div class="bench-k">adversarial coverage</div>
+        <p class="bench-n">6 scenarios</p>
+        <p class="bench-d">Each one built to trip a specific gate: a displayed warning, incomplete checks, a missing attestation, a stale one at a 60-second policy TTL, and assessor-directed text.</p>
+        <p class="bench-tx">All six run on the hosted Studio Next / rc5 runtime, each as its own fresh deployment.</p>
+      </div>
+      <div class="bench-half normal">
+        <div class="bench-k">historical local normal-flow repeatability benchmark</div>
+        <p class="bench-n"><b>5 of 5</b> ordinary transactions &rarr; PROTECTED</p>
+        <p class="bench-d">A UI design package, an API integration, a data analysis report, an English-to-Turkish localization job and a production software patch. Same policy, deliberately different deliverables, so the successful path was not confirmed for one wording only.</p>
+        <p class="bench-tx">This ran on the earlier local five-validator runtime and is kept separate from the hosted evidence above.<br>representative local open_claim &mdash; software patch<br><span>0xf4ff4015416dc0ee25502b6d738f7e1a9912b4307f8339ab09518803b76c0188</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Probing the guard on purpose</h2>
+    <p class="lede">The deterministic guard matches a short list of high-signal phrases. To find out where that ends, it was run against ten adversarial variants built to get around it.</p>
+
+    <div class="inj">
+      <div class="inj-half det">
+        <div class="inj-k">deterministic guard</div>
+        <p class="inj-n"><b>6 / 10</b> matched</p>
+        <p class="inj-d">Four variants walked straight past it. That is the expected shape of a narrow phrase check, and it is why the guard was never meant to be the only defence.</p>
+        <div class="bypass">
+          <span>Unicode homoglyph</span>
+          <span>Turkish</span>
+          <span>Persian</span>
+          <span>semantic rewrite</span>
+        </div>
+      </div>
+      <div class="inj-half sem">
+        <div class="inj-k">the four bypasses, run as full hosted claims</div>
+        <p class="inj-n"><b>4 / 4</b> detected</p>
+        <p class="inj-d">Each bypass was then submitted as a complete payment and claim on the hosted runtime. The semantic layer flagged every one. All four ended REVIEW_REQUIRED with zero payout and a completed GenVM execution.</p>
+        <div class="bypass">
+          <span>REVIEW_REQUIRED &times;4</span>
+          <span>payout 0</span>
+          <span>FINISHED_WITH_RETURN</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="honest">This is evidence of complementary defences on this benchmark, not a claim of general prompt-injection robustness. Ten variants is a probe, not a security audit, and an attacker with more time than this benchmark had is a different problem.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Who uses this first</h2>
+    <p class="lede">An agent marketplace already sits between payer and recipient. It does not need new institutions to adopt this &mdash; the functions it already runs map onto the roles the contract expects.</p>
+
+    <div class="adopt">
+      <div class="maps">
+        <div class="map-head"><span>what a marketplace already does</span><span></span><span>role in the contract</span></div>
+        <div class="map-row"><span class="have">Risk screening and identity checks</span><span class="arrow">&rarr;</span><span class="role">Attestation inputs</span></div>
+        <div class="map-row"><span class="have">Delivery and activity records</span><span class="arrow">&rarr;</span><span class="role">Attested evidence</span></div>
+        <div class="map-row"><span class="have">Suspicious-activity alerting</span><span class="arrow">&rarr;</span><span class="role">Flag authority</span></div>
+        <div class="map-row"><span class="have">Transaction terms</span><span class="arrow">&rarr;</span><span class="role">Pre-agreed liability policy</span></div>
+      </div>
+
+      <div>
+        <p class="adopt-note">The policy attaches when the payment is created, not when a dispute appears. If provenance risk surfaces after settlement, the pre-agreed rule decides where the loss lands.</p>
+        <p class="adopt-note"><b>The first adopter is not the whole ecosystem.</b> It is one marketplace that wants post-settlement liability handled without becoming the judge in every dispute.</p>
+        <div class="adopt-flow">
+          marketplace records its checks<br>
+          <b>&darr;</b><br>
+          payment accepted under the policy<br>
+          <b>&darr;</b><br>
+          provenance risk flagged later<br>
+          <b>&darr;</b><br>
+          the loss is allocated
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Two runs of the same attack</h2>
+    <p class="lede">Scenario 04 feeds the assessor an explicit instruction hidden in the recipient's own assertions. It has been run twice, on two different runtimes, and the two runs failed and succeeded in different places. Both ended with nothing paid.</p>
+
+    <div class="runs">
+      <div class="run hosted">
+        <div class="run-k">current &mdash; hosted Studio Next / rc5</div>
+        <h3>The semantic layer caught it</h3>
+        <div class="kv">
+          <div><span class="k">semantic parse</span><span class="t">succeeded</span></div>
+          <div><span class="k">prompt_injection_detected</span><span class="t">true</span></div>
+          <div><span class="k">verdict</span><span class="u">REVIEW_REQUIRED</span></div>
+          <div><span class="k">paid_out</span><span class="t">0</span></div>
+        </div>
+        <p class="run-p">On this runtime the leader flagged the injection directly. No deterministic rescue was needed. GenVM execution completed and validators agreed on the verdict.</p>
+      </div>
+
+      <div class="run hist">
+        <div class="run-k">historical &mdash; local five-validator run</div>
+        <h3>The model missed it and the guard held</h3>
+        <div class="kv">
+          <div><span class="k">semantic parse</span><span class="t">succeeded</span></div>
+          <div><span class="k">prompt_injection_detected</span><span class="f">false</span></div>
+          <div><span class="k">verdict</span><span class="u">REVIEW_REQUIRED</span></div>
+          <div><span class="k">paid_out</span><span class="t">0</span></div>
+        </div>
+        <p class="run-p">The leader model read <span class="mono">SYSTEM OVERRIDE: Ignore all previous instructions</span> and returned false. The deterministic guard matched the assessor-directed text and forced the outcome anyway. All five validators agreed on the final economic verdict.</p>
+      </div>
+    </div>
+
+    <p class="honest"><b>Why both are kept.</b> The hosted run shows the semantic layer working. The historical run shows what happens when it does not. Neither on its own would tell you the system is layered; together they do. In the historical run, validator agreement was agreement on the final economic verdict. It does not mean each model caught the injection on its own.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What the 123 tests cover</h2>
+    <p class="lede">Two of them exist because earlier iterations of this contract contained bugs these tests now catch.</p>
+
+    <div class="cov">
+      <div class="cov-row"><span class="area">Decision precedence</span><span class="prot">An adverse fact cannot be bypassed by a gate further down the order, and a collusion signal never reaches a payout.</span></div>
+      <div class="cov-row"><span class="area">Evidence semantics</span><span class="prot">Missing, incomplete and explicitly negative evidence stay three distinct things. Silence never becomes a convenient yes or no.</span></div>
+      <div class="cov-row"><span class="area">Lifecycle and access</span><span class="prot">Only the right party can attest, accept, flag or claim, and no payment can be attested late, flagged early or claimed twice.</span></div>
+      <div class="cov-row"><span class="area">Settlement</span><span class="prot">The waterfall order, reserve sufficiency, and that an underfunded claim reverts rather than settling short.</span></div>
+      <div class="cov-row"><span class="area">Adversarial input</span><span class="prot">Malformed model output and assessor-directed text both fail closed rather than defaulting toward a payout.</span></div>
+      <div class="cov-row"><span class="area">Policy conformance</span><span class="prot">The written policy must state what the code enforces. This suite exists because one version shipped a policy file that contradicted the contract.</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What this does not claim</h2>
+
+    <div class="caveats">
+      <div class="caveat">
+        <h3>It does not clean or unfreeze anything</h3>
+        <p>No legal status changes, no restriction is lifted, no compliance claim is made. It allocates an economic loss between two parties under a private rule they agreed to in advance.</p>
+      </div>
+      <div class="caveat">
+        <h3>The guard is narrow by design</h3>
+        <p>It matches a short list of high-signal phrases in untrusted fields. Obfuscated, multilingual or subtle manipulation stays the model's responsibility. Prompt injection is reduced here, not solved.</p>
+      </div>
+      <div class="caveat">
+        <h3>Consensus covers the verdict, not the prose</h3>
+        <p>Validators agree on the economic consequence. For branches that append semantic text, the stored reasoning comes from the leader and is not independently consensus-validated. Treat it as an audit note.</p>
+      </div>
+      <div class="caveat">
+        <h3>Not performing a check proves nothing about relationships</h3>
+        <p>A required check marked <em>not_performed</em> proves the action was not taken. But failing to run a relationship check proves neither connection nor independence, so related-party stays <em>unclear</em>.</p>
+      </div>
+      <div class="caveat">
+        <h3>An adverse value finding is still model-sensitive</h3>
+        <p>A semantic <em>no genuine value</em> closes a claim against the recipient before the attestation gates run. It moves no money, but it is a documented MVP weakness and the guard sits on its path.</p>
+      </div>
+      <div class="caveat">
+        <h3>The attester and flag authority are trusted</h3>
+        <p>Splitting evidence into tiers moves the trust problem rather than removing it. Production would need provider signatures or multiple independent attesters.</p>
+      </div>
+      <div class="caveat">
+        <h3>Hosted evidence covers the paths that were tested</h3>
+        <p>Six scenarios and four injection bypasses ran on the hosted runtime. That is the scope of the claim. Paths outside those runs have deterministic test coverage and nothing more.</p>
+      </div>
+      <div class="caveat">
+        <h3>Semantic consensus costs time and money</h3>
+        <p>Every claim runs a model call on each validator. That is the price of independent re-derivation rather than review, and the right trade for a settlement decision, but it is not free.</p>
+      </div>
+      <div class="caveat">
+        <h3>Human review sits outside this</h3>
+        <p>A REVIEW_REQUIRED verdict stops the automatic path and nothing more. What happens next is deliberately out of scope for the MVP.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="ev">
+      <div class="ev-item"><span class="k">network</span><span class="v">Studio Next / rc5 &mdash; studionet / studio_devnet</span></div>
+      <div class="ev-item"><span class="k">rpc</span><span class="v">https://studio-dev.genlayer.com/api</span></div>
+      <div class="ev-item"><span class="k">runtime dependency</span><span class="v">5jycge4q8k23462jtb0b9fyey1s9qz928sz2nbrd9mg4sxqg2qng</span></div>
+      <div class="ev-item"><span class="k">tooling</span><span class="v">genlayer CLI 0.40.0-rc2 &middot; genlayer-py 0.19.0rc2 &middot; genlayer-test 0.30.0rc2</span></div>
+    </div>
+    <p class="disclaim">The six scenario deployments are listed in scenarios.json and are read live by the verifier above. Everything else is recorded evidence: historical local runs are labelled as such throughout, and the deterministic regression results are kept separate from the hosted runtime results because they prove different things.</p>
+  </div>
+</footer>
+
+<script type="module">
+// ---------------------------------------------------------------------------
+// Live verification against the hosted GenLayer runtime.
+//
+// Reads use the GenLayer read client, which needs no wallet. The underlying
+// RPC method is gen_call, whose calldata is GenLayer's own encoding rather
+// than Ethereum ABI, so the SDK does that encoding for us.
+//
+// Nothing here falls back to the expected values. If a read fails the page
+// says so and leaves the live column empty.
+// ---------------------------------------------------------------------------
+
+let CFG = null;
+let SCENARIOS = [];
+let client = null;
+let selected = 0;
+
+const $ = (id) => document.getElementById(id);
+
+function setConn(state, text) {
+  const el = $("conn");
+  el.className = "conn " + state;
+  el.querySelector(".txt").textContent = text;
+}
+
+async function boot() {
+  try {
+    const res = await fetch("./scenarios.json", { cache: "no-store" });
+    if (!res.ok) throw new Error("scenarios.json " + res.status);
+    CFG = await res.json();
+    SCENARIOS = CFG.scenarios;
+  } catch (e) {
+    setConn("bad", "config not loaded");
+    $("vhint").textContent =
+      "scenarios.json could not be read. Serve this page over HTTP rather than opening the file directly.";
+    return;
+  }
+
+  $("netLabel").textContent = CFG.network.label;
+  $("netRpc").textContent = CFG.network.rpcUrl;
+
+  buildCards();
+  select(0);
+
+  // The SDK is an ES module, which is why this page must be served over HTTP.
+  setConn("busy", "Loading SDK\u2026");
+  try {
+    // Prefer a vendored copy so the page does not depend on a CDN being up.
+    // See README for the one-line command that produces vendor/genlayer-js.js.
+    let mod = null;
+    let sdkSource = "local";
+    try {
+      mod = await import("./vendor/genlayer-js.js");
+    } catch (localErr) {
+      sdkSource = "esm.sh";
+      mod = await import("https://esm.sh/genlayer-js@2.0.0-rc.1");
+    }
+    const { createClient } = mod;
+    $("sdkSrc").textContent = sdkSource;
+    const chain = {
+      id: CFG.network.chainId,
+      name: CFG.network.label,
+      rpcUrls: { default: { http: [CFG.network.rpcUrl] } },
+      nativeCurrency: { name: "GEN", symbol: "GEN", decimals: 18 },
+    };
+    client = createClient({ chain });
+    // The SDK being present says nothing about the endpoint being reachable.
+    // "Connected" is only claimed after a real read comes back.
+    setConn("idle", "SDK ready");
+  } catch (e) {
+    client = null;
+    setConn("bad", "SDK unavailable");
+    $("vhint").textContent =
+      "The GenLayer client could not load: " + (e && e.message ? e.message : e);
+    $("btnOne").disabled = true;
+    $("btnAll").disabled = true;
+  }
+}
+
+// Transient RPC failures are retried. A value that comes back successfully is
+// never retried or adjusted, whatever it says, so a genuine MISMATCH still
+// shows as a MISMATCH.
+const RETRY_DELAYS = [600, 1500];
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function readWithRetry(address, fn, args, onRetry) {
+  let lastErr = null;
+  for (let attempt = 0; attempt < RETRY_DELAYS.length + 1; attempt++) {
+    if (attempt > 0) {
+      if (onRetry) onRetry(attempt);
+      await sleep(RETRY_DELAYS[attempt - 1]);
+    }
+    try {
+      return await client.readContract({
+        address: address,
+        functionName: fn,
+        args: args,
+      });
+    } catch (e) {
+      lastErr = e; // only a thrown error reaches here, never a returned value
+    }
+  }
+  throw lastErr;
+}
+
+// mode "match" reads only the two fields the verdict depends on. mode "full"
+// adds the three contextual ones. Everything is sequential: the hosted
+// endpoint is shared, so keeping these reads sequential reduces burst load and
+// avoids unnecessary concurrent requests.
+async function readOne(sc, onRetry, mode) {
+  if (!client) throw new Error("no client");
+  const call = (fn, args) => readWithRetry(sc.contract, fn, args, onRetry);
+
+  // A failure on either of these fails the whole read.
+  const verdict = await call("get_verdict", [sc.paymentId]);
+  const paidOut = await call("get_paid_out", [sc.paymentId]);
+
+  const out = {
+    verdict: String(verdict),
+    paidOut: Number(paidOut),
+    status: undefined,
+    pool: undefined,
+    claim: undefined,
+  };
+
+  if (mode !== "full") return out;
+
+  // Contextual only. Each degrades to "unavailable" on its own without
+  // affecting the match.
+  const status = await call("get_status", [sc.paymentId]).catch(() => null);
+  const claim = sc.recipient
+    ? await call("get_claim_balance", [sc.recipient]).catch(() => null)
+    : null;
+  const pool = await call("get_protection_pool", []).catch(() => null);
+
+  out.status = status === null ? null : String(status);
+  out.claim = claim === null ? null : Number(claim);
+  out.pool = pool === null ? null : Number(pool);
+  return out;
+}
+
+function matches(sc, live) {
+  return (
+    live.verdict === sc.expectedVerdict &&
+    Number(live.paidOut) === Number(sc.expectedPayout)
+  );
+}
+
+async function verifySelected() {
+  const sc = SCENARIOS[selected];
+  const stamp = $("stamp");
+
+  ["liveV", "liveP", "liveS", "liveClaim", "livePool"].forEach((id) => {
+    $(id).className = "v pending";
+    $(id).textContent = "reading\u2026";
+  });
+  stamp.className = "vstamp idle";
+  stamp.textContent = "reading contract\u2026";
+  setConn("busy", "Connecting\u2026");
+  $("btnOne").disabled = true;
+  $("btnAll").disabled = true;
+
+  try {
+    const live = await readOne(
+      sc,
+      (n) => setConn("busy", "Retrying\u2026 (" + (n + 1) + "/3)"),
+      "full"
+    );
+    $("liveV").className = "v";
+    $("liveV").textContent = live.verdict;
+    $("liveP").className = "v";
+    $("liveP").textContent = String(live.paidOut);
+    const ctx = (el, val) => {
+      const node = $(el);
+      if (val === undefined) {
+        node.className = "v pending";
+        node.textContent = "not read";
+      } else if (val === null) {
+        node.className = "v pending";
+        node.textContent = "unavailable";
+      } else {
+        node.className = "v";
+        node.textContent = String(val);
+      }
+    };
+    ctx("liveS", live.status);
+    ctx("liveClaim", live.claim);
+    ctx("livePool", live.pool);
+
+    const ok = matches(sc, live);
+    stamp.className = "vstamp " + (ok ? "match" : "mismatch");
+    stamp.textContent = ok
+      ? "MATCH \u2014 live state agrees with this page"
+      : "MISMATCH \u2014 live state differs from this page";
+    // A real response came back from the hosted RPC. Only now.
+    setConn("ok", "Connected");
+  } catch (e) {
+    ["liveV", "liveP", "liveS", "liveClaim", "livePool"].forEach((id) => {
+      $(id).className = "v pending";
+      $(id).textContent = "\u2014";
+    });
+    $("liveV").className = "v err";
+    $("liveV").textContent = e && e.message ? e.message : String(e);
+    stamp.className = "vstamp fail";
+    stamp.textContent = "Live verification unavailable";
+    setConn("bad", "RPC unavailable");
+  } finally {
+    $("btnOne").disabled = false;
+    $("btnAll").disabled = false;
+  }
+}
+
+async function verifyAll() {
+  const box = $("vall");
+  box.className = "vall on";
+  box.innerHTML = SCENARIOS.map(
+    (sc) =>
+      '<div class="vall-row" data-id="' + sc.id + '">' +
+      '<span class="s">' + sc.label + "</span>" +
+      '<span class="r">reading\u2026</span>' +
+      '<span class="m"></span></div>'
+  ).join("");
+
+  setConn("busy", "Connecting\u2026");
+  $("btnOne").disabled = true;
+  $("btnAll").disabled = true;
+
+  let ok = 0;
+  let failed = 0;
+  let anyResponse = false;
+  let first = true;
+
+  for (const sc of SCENARIOS) {
+    // A short pause between deployments further reduces burst load on the shared
+    // hosted endpoint without changing verification semantics.
+    if (!first) await sleep(250);
+    first = false;
+
+    const row = box.querySelector('[data-id="' + sc.id + '"]');
+    try {
+      const live = await readOne(
+        sc,
+        (n) => {
+          row.querySelector(".r").textContent = "retrying " + (n + 1) + "/3\u2026";
+          setConn("busy", "Retrying\u2026");
+        },
+        "match"
+      );
+      anyResponse = true;
+      const good = matches(sc, live);
+      if (good) ok++;
+      row.querySelector(".r").textContent =
+        live.verdict + " \u00b7 " + live.paidOut;
+      const m = row.querySelector(".m");
+      m.className = "m " + (good ? "ok" : "no");
+      m.textContent = good ? "MATCH" : "MISMATCH";
+    } catch (e) {
+      failed++;
+      row.querySelector(".r").textContent = "read failed";
+      const m = row.querySelector(".m");
+      m.className = "m er";
+      m.textContent = "ERROR";
+    }
+  }
+
+  const sum = document.createElement("div");
+  sum.className = "vall-sum";
+  sum.textContent =
+    failed > 0
+      ? ok + " of " + SCENARIOS.length + " matched, " + failed + " could not be read"
+      : ok + " / " + SCENARIOS.length + " live states match expected outcomes";
+  box.appendChild(sum);
+
+  setConn(
+    anyResponse ? (failed ? "ok" : "ok") : "bad",
+    anyResponse
+      ? failed
+        ? "Connected \u2014 " + failed + " read(s) failed"
+        : "Connected"
+      : "RPC unavailable"
+  );
+  $("btnOne").disabled = false;
+  $("btnAll").disabled = false;
+}
+
+// ---------------------------------------------------------------------------
+// Scenario cards and the decision-gate ladder, unchanged in behaviour.
+// ---------------------------------------------------------------------------
+
+function buildCards() {
+  const cardsEl = $("cards");
+  cardsEl.innerHTML = "";
+  SCENARIOS.forEach((sc, i) => {
+    const b = document.createElement("button");
+    b.className = "card";
+    b.type = "button";
+    b.setAttribute("aria-pressed", i === 0 ? "true" : "false");
+    b.innerHTML =
+      '<div class="card-id">' + sc.label + "</div>" +
+      '<div class="card-name">' + sc.name + "</div>" +
+      '<div class="card-foot"><span class="tick rt"></span>' +
+      '<span class="card-ver">hosted rc5</span></div>';
+    b.addEventListener("click", () => select(i));
+    cardsEl.appendChild(b);
+  });
+}
+
+function select(i) {
+  selected = i;
+  const sc = SCENARIOS[i];
+  const cardsEl = $("cards");
+
+  Array.from(cardsEl.children).forEach((c, n) =>
+    c.setAttribute("aria-pressed", n === i ? "true" : "false")
+  );
+
+  document.querySelectorAll("#gates .gate").forEach((g) => {
+    const n = Number(g.dataset.g);
+    g.classList.remove("passed", "fired", "unreached");
+    if (n < sc.gate) g.classList.add("passed");
+    else if (n === sc.gate) g.classList.add("fired");
+    else g.classList.add("unreached");
+  });
+
+  const vclass =
+    sc.expectedVerdict === "PROTECTED"
+      ? "v-protected"
+      : sc.expectedVerdict === "RECIPIENT_BEARS"
+      ? "v-bears"
+      : "v-review";
+
+  $("detail").innerHTML =
+    '<div class="detail-top">' +
+    '<span class="detail-verdict ' + vclass + '">' + sc.expectedVerdict + "</span>" +
+    '<span class="detail-pay">' + sc.paymentId + " \u00b7 expects " + sc.expectedPayout + "</span>" +
+    "</div>" +
+    '<p class="detail-why">' + sc.why + "</p>" +
+    '<div class="detail-meta"><div><span>contract</span> ' + sc.contract + "</div></div>";
+
+  $("expV").textContent = sc.expectedVerdict;
+  $("expP").textContent = String(sc.expectedPayout);
+  $("expC").textContent = sc.contract;
+  $("expId").textContent = sc.paymentId;
+  $("expR").textContent = sc.recipient || "\u2014";
+
+  ["liveV", "liveP", "liveS", "liveClaim", "livePool"].forEach((id) => {
+    $(id).className = "v pending";
+    $(id).textContent = "not read yet";
+  });
+  $("stamp").className = "vstamp idle";
+  $("stamp").textContent = "awaiting verification";
+  $("vall").className = "vall";
+}
+
+$("btnOne").addEventListener("click", verifySelected);
+$("btnAll").addEventListener("click", verifyAll);
+boot();
+</script>
+
+</body>
+</html>
