@@ -1,0 +1,118 @@
+{
+  "at": "2026-10-13T20:30:21.276346+00:00",
+  "result": "PASSED",
+  "claim_hash": "0x93b8381bdf49a0c44fd5dce38dffc2ddf087dba7589c444328672cde07388daf",
+  "state": {
+    "created": "2026-10-13T20:23:47.090202+00:00",
+    "rpc": "https://studio.genlayer.com/api",
+    "chain_id": 61999,
+    "contract": "0xA218e344BB0691B0FFfD4938bF84cc21ff32Ec12",
+    "deploy_hash": "0xc1692dc5ee03f19fee7091ff3f5840fbe834b3f4180766c0fa91365c3379821e",
+    "source": {
+      "raw_sha256": "b6d7bb600370c8b8ab91bc4339206283ffb46e0006cd92a96ae0942ad9631d79",
+      "line_endings_normalized": false,
+      "payload_sha256": "b6d7bb600370c8b8ab91bc4339206283ffb46e0006cd92a96ae0942ad9631d79"
+    },
+    "policy_id": "gfl-sn-20261013T202258Z",
+    "payment_id": "sn-20261013T202258Z",
+    "amount": 1000,
+    "ttl_seconds": 140,
+    "ttl_inputs": {
+      "observed_submit_to_decided": [
+        6.93,
+        6.47
+      ],
+      "poll_seconds": 3,
+      "confirm_allowance_seconds": 120
+    },
+    "wallet": "0xcC88888f2eeD5D8e457e6753FAaE64941dc33092",
+    "operators": {
+      "owner_payer": "0x147FA2ABD55Fa2502CB68F0bF6da155e64ceE24f",
+      "attester": "0x0c4362D5A9BFAB82143f8604411355c2FE920B1C",
+      "flag_authority": "0x1db527AAaDFf1aCd4d043FbcDD98757989a8f757"
+    },
+    "consensus_target": "0xb7278A61aa25c888815aFC32Ad3cC52fF24fE575",
+    "setup_transactions": {
+      "deploy": "0xc1692dc5ee03f19fee7091ff3f5840fbe834b3f4180766c0fa91365c3379821e",
+      "register_attester": "0x8d8e21133e8cc249e9da1e6280fc234702836656654b04d2e27436a7a1dd4bd5",
+      "fund_protection_pool": "0x8cf4753ebf25e5f81e19acf9c8305695046457b592c7dea4c5093b9d269a5bee",
+      "register_policy": "0x500b3c3e628b03074ffa383e5d2ffabdbfc0ba814429ec387fd0a7a8ae1a8c31",
+      "register_payment": "0x5e7fb473f4c64911d87e45658fbd8671ad1cbdb8f22027854dc9400ea7b34140"
+    },
+    "live_state_verified": true,
+    "live_state": {
+      "at": "2026-10-13T20:24:11.558451+00:00",
+      "values": {
+        "status": "REGISTERED",
+        "has_attestation": false,
+        "protection_pool": 1000,
+        "max_attestation_age": 140,
+        "required_check_ids": "[\"provider_risk_screen\",\"counterparty_history_or_identity\"]",
+        "is_attester": true
+      },
+      "policy_text_matches": true,
+      "mismatch": {}
+    },
+    "attest_hash": "0xda0875f932087a685f7828357ecc0d715bdd4094495d6f31fe3c9fd11662ace5",
+    "attest_created_unix": 1791923164.0,
+    "accept": {
+      "hash": "0x7e92d0af1799961d2eb3dc262a4065d4fb7cb6f2b4676bc095b8497a2c0a4481",
+      "failures": [],
+      "status_readback": "ACCEPTED",
+      "attestation_fresh_readback": true,
+      "observed_age_seconds": 12.0
+    },
+    "status_after_flag": "FLAGGED"
+  },
+  "checks": {
+    "chain": {
+      "passed": true,
+      "failures": []
+    },
+    "deploy_payload": {
+      "passed": true,
+      "failures": []
+    },
+    "deployed_code_identity": {
+      "passed": true,
+      "failures": []
+    },
+    "distinct_hashes": {
+      "passed": true,
+      "failures": []
+    },
+    "accept_binding": {
+      "passed": true,
+      "failures": []
+    },
+    "accept_consensus": {
+      "passed": true,
+      "failures": []
+    },
+    "claim_binding": {
+      "passed": true,
+      "failures": []
+    },
+    "claim_consensus": {
+      "passed": true,
+      "failures": []
+    },
+    "final_state": {
+      "passed": true,
+      "failures": []
+    }
+  },
+  "failed_checks": [],
+  "final_state": {
+    "status": "RESOLVED",
+    "verdict": "PROTECTED",
+    "paid_out": 1000,
+    "claim_balance_wallet": 1000,
+    "attestation_fresh": true,
+    "protection_pool": 0,
+    "reasoning": "Value exchanged, no notice at acceptance, agreed checks attested and fresh, no related-party indicators. Attested delivery evidence shows a passed outcome with payer acceptance receipt recorded before acceptance, and it matches the agreed terms for a brand identity package. The semantic record contains no adverse warning, claim, red flag, or adverse recipient admission."
+  },
+  "final_read_error": null,
+  "finality_waits": {},
+  "exit_code": 0
+}

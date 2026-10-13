@@ -1,0 +1,138 @@
+[
+  {
+    "at": "2026-10-13T20:19:41.776Z",
+    "event": "consensus_contract",
+    "pinned": "0xb7278A61aa25c888815aFC32Ad3cC52fF24fE575",
+    "hosted_reports": "0x0000000000000000000000000000000000000000"
+  },
+  {
+    "at": "2026-10-13T20:19:41.784Z",
+    "event": "silent_restore_skipped",
+    "reason": "no authorized account"
+  },
+  {
+    "at": "2026-10-13T20:19:47.960Z",
+    "event": "wallet_connected",
+    "address": "0xcc88888f2eed5d8e457e6753faae64941dc33092",
+    "silent": false
+  },
+  {
+    "at": "2026-10-13T20:19:47.960Z",
+    "event": "connected",
+    "address": "0xcc88888f2eed5d8e457e6753faae64941dc33092"
+  },
+  {
+    "at": "2026-10-13T20:25:19.671Z",
+    "event": "case_loaded",
+    "contract": "0xA218e344BB0691B0FFfD4938bF84cc21ff32Ec12",
+    "payment_id": "sn-20261013T202258Z",
+    "wallet": "0xcC88888f2eeD5D8e457e6753FAaE64941dc33092"
+  },
+  {
+    "at": "2026-10-13T20:25:54.044Z",
+    "event": "action_stopped",
+    "list": "accept",
+    "kind": "Cancelled",
+    "error": "cancelled by user"
+  },
+  {
+    "at": "2026-10-13T20:26:10.834Z",
+    "event": "wallet_prompt",
+    "method": "accept_payment"
+  },
+  {
+    "at": "2026-10-13T20:26:15.848Z",
+    "event": "pending_saved",
+    "chainId": 61999,
+    "contract": "0xa218e344bb0691b0fffd4938bf84cc21ff32ec12",
+    "paymentId": "sn-20261013T202258Z",
+    "policyId": "gfl-sn-20261013T202258Z",
+    "method": "accept_payment",
+    "args": [
+      "sn-20261013T202258Z",
+      "gfl-sn-20261013T202258Z",
+      "{\r\n  \"payment_id\": \"pay-001\",\r\n  \"deliverable\": {\r\n    \"description\": \"Brand identity package: logo, type system, usage guide\",\r\n    \"delivered\": \"14 files, commit 4a91c2e\",\r\n    \"acceptance_confirmed_by_payer\": true\r\n  },\r\n  \"relationship_to_payer\": \"arms-length client, introduced via public marketplace listing\",\r\n  \"recipient_claimed_acceptance_time\": \"2026-08-12T09:41:00Z\"\r\n}\r\n"
+    ],
+    "wallet": "0xcc88888f2eed5d8e457e6753faae64941dc33092",
+    "hash": "0x7e92d0af1799961d2eb3dc262a4065d4fb7cb6f2b4676bc095b8497a2c0a4481",
+    "savedAt": "2026-10-13T20:26:15.848Z"
+  },
+  {
+    "at": "2026-10-13T20:26:15.849Z",
+    "event": "accept_payment_submitted",
+    "hash": "0x7e92d0af1799961d2eb3dc262a4065d4fb7cb6f2b4676bc095b8497a2c0a4481"
+  },
+  {
+    "at": "2026-10-13T20:26:22.879Z",
+    "event": "accept_payment_record",
+    "status": "ACCEPTED",
+    "outcome": "MAJORITY_AGREE",
+    "votes": {
+      "0x14402D49f317CE1a2F35BAE01b1804A2A9703dCb": "agree",
+      "0x4404Fb70d490c935758146f42A73DC850FF95C71": "agree",
+      "0x772ffCd1dF6Cc566eC4b8d3f4F4f8eBbb6B36C84": "agree",
+      "0x9ea87b28DcA2F79fe108CF06a4c13B4c876AC23d": "agree",
+      "0xacc2459F341D7a887bcA8FAA62F1EC9378d4Bc67": "agree"
+    },
+    "execution": "FINISHED_WITH_RETURN",
+    "mode": "NORMAL",
+    "method": "accept_payment",
+    "problems": []
+  },
+  {
+    "at": "2026-10-13T20:26:26.860Z",
+    "event": "accept_readback",
+    "status": "ACCEPTED",
+    "attestation_fresh": true
+  },
+  {
+    "at": "2026-10-13T20:29:14.916Z",
+    "event": "wallet_prompt",
+    "method": "open_claim"
+  },
+  {
+    "at": "2026-10-13T20:29:20.163Z",
+    "event": "pending_saved",
+    "chainId": 61999,
+    "contract": "0xa218e344bb0691b0fffd4938bf84cc21ff32ec12",
+    "paymentId": "sn-20261013T202258Z",
+    "policyId": "gfl-sn-20261013T202258Z",
+    "method": "open_claim",
+    "args": [
+      "sn-20261013T202258Z"
+    ],
+    "wallet": "0xcc88888f2eed5d8e457e6753faae64941dc33092",
+    "hash": "0x93b8381bdf49a0c44fd5dce38dffc2ddf087dba7589c444328672cde07388daf",
+    "savedAt": "2026-10-13T20:29:20.163Z"
+  },
+  {
+    "at": "2026-10-13T20:29:20.163Z",
+    "event": "open_claim_submitted",
+    "hash": "0x93b8381bdf49a0c44fd5dce38dffc2ddf087dba7589c444328672cde07388daf"
+  },
+  {
+    "at": "2026-10-13T20:29:39.765Z",
+    "event": "open_claim_record",
+    "status": "ACCEPTED",
+    "outcome": "MAJORITY_AGREE",
+    "votes": {
+      "0x3D83ab507785b95ca5C208bEc80CCe3D5ca98100": "idle",
+      "0x5310dcF075E0BD47d29B8ec6581F736C767f54D2": "agree",
+      "0xBBb165E4c9d73a1493D363280f7067Cd07891dBE": "agree",
+      "0xE6BD8050758CB15fC88387223E31Ae2708B119dC": "idle",
+      "0xec2Fb79cd12255Eb34886CEd7332f27B98DEe658": "agree"
+    },
+    "execution": "FINISHED_WITH_RETURN",
+    "mode": "NORMAL",
+    "method": "open_claim",
+    "problems": []
+  },
+  {
+    "at": "2026-10-13T20:29:46.295Z",
+    "event": "claim_readback",
+    "status": "RESOLVED",
+    "verdict": "PROTECTED",
+    "paid_out": 1000,
+    "claim_balance": 1000
+  }
+]
