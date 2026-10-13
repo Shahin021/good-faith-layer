@@ -1,0 +1,10 @@
+{
+  "payment_id": "pay-001",
+  "deliverable": {
+    "description": "Brand identity package: logo, type system, usage guide",
+    "delivered": "14 files, commit 4a91c2e",
+    "acceptance_confirmed_by_payer": true
+  },
+  "relationship_to_payer": "arms-length client, introduced via public marketplace listing",
+  "recipient_claimed_acceptance_time": "2026-08-12T09:41:00Z"
+}
