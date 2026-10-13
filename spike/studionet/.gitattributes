@@ -1,0 +1,4 @@
+contract/** -text
+public/vendor/** -text
+consensus_main_v5_abi.json -text
+sdk/package-lock.json -text

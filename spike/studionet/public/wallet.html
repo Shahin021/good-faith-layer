@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GFL Studionet Wallet</title>
+<style>
+:root{color-scheme:dark;--bg:#080f1b;--fg:#edf4ff;--mut:#95a7bf;--ok:#58dfb2;--bad:#ff929d;--line:#25344a;--card:#111d2f;--accent:#5ae0b3}
+*{box-sizing:border-box}html{min-height:100%;background:var(--bg)}body{color:var(--fg);font:14px/1.65 "Segoe UI",system-ui,sans-serif;margin:0;padding:0;background:radial-gradient(ellipse at 90% 0%,#123a3b66,transparent 48%),radial-gradient(ellipse at 0% 35%,#17396644,transparent 50%);min-height:100vh}
+.shell{max-width:1140px;margin:0 auto;padding:30px 28px 48px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:24px;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:12px;font-size:17px;font-weight:700;letter-spacing:-.3px}.mark{display:grid;place-items:center;background:#183f38;border:1px solid #377c65;color:#87f1ce;width:40px;height:40px;border-radius:12px;font-size:14px;letter-spacing:-1px}.network{display:flex;align-items:center;gap:8px;color:#bfd0e6;font-size:12px}.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px #5ae0b366}.hero{padding:38px 0 28px;max-width:780px}.eyebrow{text-transform:uppercase;letter-spacing:2px;color:var(--accent);font-size:11px;font-weight:700}h1{font-size:clamp(29px,4vw,44px);letter-spacing:-1.5px;line-height:1.15;margin:12px 0 16px;font-weight:650}.hero p{font-size:15px;max-width:640px;margin:0;color:var(--mut)}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.chip{border:1px solid #2d4650;background:#142a2b;color:#9fe5ce;padding:5px 11px;border-radius:999px;font-size:11px}.chip.neutral{background:#132137;border-color:#2b3c56;color:#b7c9e1}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}.grid>*{min-width:0}section{background:linear-gradient(145deg,#142137,#101b2b);border:1px solid var(--line);border-radius:18px;padding:24px;min-width:0;box-shadow:0 10px 35px #00000012}.section-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}.step{display:grid;place-items:center;flex-shrink:0;width:32px;height:32px;border-radius:10px;background:#1c3046;color:#9ec8e2;border:1px solid #30445d;font:12px ui-monospace,monospace}h2{font-size:17px;line-height:1.35;font-weight:600;letter-spacing:-.3px;margin:0}.subtitle{font-size:11px;color:var(--mut);margin-top:3px}.mut{color:var(--mut)}section p{margin:0 0 18px}.actions{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0 12px}button{appearance:none;font:600 12px/1.3 "Segoe UI",system-ui,sans-serif;padding:12px 17px;border:1px solid #58dcb1;border-radius:10px;background:var(--accent);color:#08251d;cursor:pointer;transition:background .15s,border-color .15s,transform .15s;min-height:42px}button:hover:not(:disabled){background:#85eac8;transform:translateY(-1px)}button:focus-visible,summary:focus-visible{outline:3px solid #b1f4dc;outline-offset:4px}button:disabled{background:#1b2b3c;border-color:#2a3e51;color:#7f92a6;cursor:not-allowed}#bCancelAccept,#bCancelClaim,#bDownload{background:#17283e;border-color:#324963;color:#c1d2e6}#bCancelAccept:disabled,#bCancelClaim:disabled{color:#687d95;background:#142236}#wallet,#case{padding:12px 14px;border:1px solid #263951;background:#0d1828;border-radius:10px;font-size:12px;overflow-wrap:anywhere;word-break:normal}code,pre{font:11px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace}code{color:#c4d9ee;background:#182940;border-radius:4px;padding:2px 4px;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;max-height:300px;overflow:auto;background:#0b1422;padding:16px;border:1px solid #22344c;border-radius:12px;margin:16px 0 0}.ok{color:var(--ok)}.bad{color:var(--bad)}ol{margin:12px 0 0;padding-left:22px;max-height:330px;overflow:auto;scrollbar-color:#39546b transparent}li{margin:0;padding:9px 8px 9px 2px;border-bottom:1px solid #24344a;font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}li:last-child{border:0}details{min-width:0;margin-top:18px;border-top:1px solid #28394f;padding-top:14px}summary{font-size:12px;font-weight:600;color:#adc4dd;cursor:pointer;user-select:none}.wide{grid-column:1/-1}#banner{display:none;border-color:#a95265;margin-bottom:18px;background:#301c2b}.foot{color:#778ba4;font-size:11px;display:flex;justify-content:space-between;gap:20px;padding:24px 4px 0}.note{font-size:11px;margin-top:14px;color:#8da2bd}.log-head{display:flex;justify-content:space-between;align-items:center;gap:16px}.log-head button{margin:0}.log-card details{margin-top:12px}.log-card h2{font-size:15px}
+@media(max-width:720px){.shell{padding:20px 16px 30px}.grid{grid-template-columns:1fr}.hero{padding:28px 0}section{padding:20px;border-radius:15px}.topbar{align-items:flex-start}.network{font-size:10px}.brand{font-size:14px}.mark{width:34px;height:34px}.foot{flex-direction:column;gap:6px}h1{letter-spacing:-1px}}
+@media(prefers-reduced-motion:reduce){button{transition:none}button:hover:not(:disabled){transform:none}}
+
+/* Charcoal palette and aligned connection cards. */
+:root{--bg:#191a1c;--fg:#f1f1f0;--mut:#aaaeb3;--ok:#88cfa9;--bad:#f2959e;--line:#3b3e42;--card:#25272a;--accent:#b4d9c2}
+html,body{background:#191a1c}section{background:linear-gradient(145deg,#292b2e,#242629);box-shadow:0 10px 30px #00000015}.topbar{border-color:#383b3e}.mark{background:#303a34;border-color:#526558;color:#c3e0cd}.network{color:#b9bec4}.dot{background:#a3caae;box-shadow:none}.eyebrow{color:#b4d9c2}.chip{background:#2d3731;border-color:#48594d;color:#bfd8c6}.chip.neutral{background:#292d31;border-color:#42484e;color:#bdc3ca}.step{background:#33373b;border-color:#484e54;color:#c5ccd3}.actions button{border-color:#b4d9c2}button:hover:not(:disabled){background:#cbe6d5}button:disabled{background:#303337;border-color:#42464b;color:#93999f}#bCancelAccept,#bCancelClaim,#bDownload{background:#303337;border-color:#4d535a;color:#d0d5db}#bCancelAccept:disabled,#bCancelClaim:disabled{background:#2c2f32;color:#7f858b}#wallet,#case{background:#1e2023;border-color:#41464c;min-height:70px;display:flex;align-items:center;flex-wrap:wrap;gap:3px}code{background:#34383d;color:#d1d7de}pre{background:#1e2023;border-color:#41464c}li{border-color:#3a3f45}details{border-color:#41464c}summary{color:#c2c8cf}.note,.foot{color:#a1a8b0}.grid>section:nth-child(-n+2){display:flex;flex-direction:column;align-self:stretch}.grid>section:nth-child(-n+2) .actions{margin-top:auto;padding-top:18px;margin-bottom:0}ol{scrollbar-color:#5c646d transparent}
+
+/* Charcoal and violet: actions are distinct from success states. */
+:root{--bg:#18191c;--fg:#f3f4f6;--mut:#a1a1aa;--ok:#86d4a8;--bad:#f2959e;--line:#3b3d45;--card:#24262b;--accent:#a78bfa}
+html,body{background:#18191c}section{background:linear-gradient(145deg,#292b31,#24262b)}.mark{background:#30283f;border-color:#66517f;color:#d3c3ff}.dot{background:#a78bfa}.eyebrow{color:#c0aaff}.chip{background:#292e2a;border-color:#435547;color:#b6d6c0}.chip.neutral{background:#2b2833;border-color:#494253;color:#c9c2d6}button{background:#a78bfa;color:#211335;border-color:#a78bfa}.actions button{border-color:#a78bfa}button:hover:not(:disabled){background:#c0aaff}button:focus-visible,summary:focus-visible{outline-color:#d3c3ff}.step{background:#302b3b;border-color:#4c415f;color:#c9b7ed}#wallet,#case{background:#1e2025;border-color:#41434c}code{background:#33303d;color:#ded5ed}pre{background:#1d1f24;border-color:#41434c}#bCancelAccept,#bCancelClaim,#bDownload{background:#303138;border-color:#4c4e59;color:#d0d2db}#bCancelAccept:disabled,#bCancelClaim:disabled{background:#2c2e34;color:#7f838d}summary{color:#c5bdd5}.note,.foot{color:#a1a1aa}
+
+/* Flat graphite surfaces with ice-colored primary actions. */
+:root{--bg:#252525;--fg:#f2f2f2;--mut:#b5b5b5;--ok:#8bd5a5;--bad:#f29b9b;--line:#454545;--card:#303030;--accent:#d6eaf2}
+html,body{background:#252525}section{background:#303030;border-color:#454545;box-shadow:none}.topbar{border-color:#454545}.mark{background:#363636;border-color:#555;color:#d6eaf2}.network{color:#c4c4c4}.dot{background:#d6eaf2;box-shadow:none}.eyebrow{color:#c6c6c6}.chip,.chip.neutral{background:#303030;border-color:#4b4b4b;color:#d0d0d0}.step{background:#383838;border-color:#505050;color:#d6eaf2}button,.actions button{background:#d6eaf2;color:#252525;border-color:#d6eaf2}button:hover:not(:disabled){background:#ecf6fa}button:focus-visible,summary:focus-visible{outline-color:#d6eaf2}button:disabled{background:#383838;color:#929292;border-color:#505050}#bCancelAccept,#bCancelClaim,#bDownload{background:#383838;color:#e0e0e0;border-color:#555}#bCancelAccept:disabled,#bCancelClaim:disabled{background:#343434;color:#929292;border-color:#494949}#wallet,#case{background:#292929;border-color:#4b4b4b}code{background:#3b3b3b;color:#ededed}pre{background:#292929;border-color:#4b4b4b}li,details{border-color:#454545}summary{color:#d2d2d2}.note,.foot{color:#b5b5b5}ol{scrollbar-color:#666 #303030}
+
+/* Reference card: cool graphite, white typography, ice actions. */
+:root{--bg:#242b32;--card:#2c343d;--fg:#ffffff;--mut:#e0e4e8;--line:#46515d;--accent:#d6eaf2}
+html,body{background:#242b32;color:#fff}section{background:#2c343d;border-color:#46515d;box-shadow:0 8px 24px #11182022}.topbar{border-color:#46515d}.brand,h1,h2,.eyebrow,.network,.subtitle,.mut,.note,.foot,summary{color:#fff}.mark{background:#303a45;border-color:#526170;color:#fff}.chip,.chip.neutral{background:#303a45;border-color:#4e5b69;color:#fff}.step{background:#35404c;border-color:#536273;color:#fff}#wallet,#case,pre{background:#20272e;border-color:#475463;color:#fff}code{background:#35404b;color:#fff}#bCancelAccept,#bCancelClaim,#bDownload{background:#35404b;border-color:#536273;color:#fff}button:disabled,#bCancelAccept:disabled,#bCancelClaim:disabled{background:#343e48;border-color:#4b5866;color:#b9c2cc}li,details{border-color:#46515d}ol{scrollbar-color:#617184 #2c343d}.ok{color:#8bd5a5}.bad{color:#f29b9b}
+
+/* Black background, ice-blue actions. */
+:root{--bg:#000000;--accent:#c5e8f5}
+html,body{background:#000000}button,.actions button{background:#c5e8f5;border-color:#c5e8f5;color:#14232b}button:hover:not(:disabled){background:#e1f4fc}button:focus-visible,summary:focus-visible{outline-color:#c5e8f5}button:disabled{background:#343e48;border-color:#4b5866;color:#b9c2cc}#bCancelAccept,#bCancelClaim,#bDownload{background:#35404b;border-color:#536273;color:#fff}#bCancelAccept:disabled,#bCancelClaim:disabled{background:#343e48;border-color:#4b5866;color:#b9c2cc}
+
+/* Near-black cards and subtle ice-blue outlines. */
+:root{--card:#14181c;--line:#334b58}
+section{background:#14181c;border:1px solid #334b58;box-shadow:none}#wallet,#case,pre{background:#0e1216;border-color:#283c47}.mark,.step{background:#192127;border-color:#334b58;color:#fff}.chip,.chip.neutral{background:#141b20;border-color:#334b58;color:#fff}code{background:#202a31;color:#fff}li,details,.topbar{border-color:#283c47}#bCancelAccept,#bCancelClaim,#bDownload{background:#1a2329;border-color:#334b58;color:#fff}button:disabled,#bCancelAccept:disabled,#bCancelClaim:disabled{background:#1b2329;border-color:#2d414d;color:#a1aeb6}ol{scrollbar-color:#334b58 #14181c}
+
+/* Readability and state (keeps the black background, blue outlines and ice buttons).
+   Status badges, hints, the primary action and the copy button are set by sn-page.js
+   from the page's real state; these rules only style them. */
+body{font-size:15px}
+.subtitle{font-size:13px;color:#c9d3da}
+.chip,.chip.neutral{font-size:12px}
+h2{font-size:18px}
+section p,section p.mut{font-size:14px}
+code{font-size:12px}
+li{font-size:13px}
+summary{font-size:13px}
+.note,.foot{font-size:12.5px;color:#c9d3da}
+#wallet,#case{font-size:13px}
+button{font-size:13px}
+/* one primary action (ice), everything else secondary */
+button.primary,.actions button.primary{background:#c5e8f5;border-color:#c5e8f5;color:#14232b}
+button.primary:hover:not(:disabled){background:#e1f4fc}
+button.secondary,.actions button.secondary{background:#1a2329;border-color:#334b58;color:#fff}
+button.secondary:hover:not(:disabled){background:#22303a;border-color:#4a6878}
+/* unavailable is unmistakable: no fill, dashed outline, muted label */
+button:disabled,.actions button:disabled,#bCancelAccept:disabled,#bCancelClaim:disabled{background:transparent;border:1px dashed #2d414d;color:#6f8290;cursor:not-allowed;transform:none}
+.hint{font-size:13px;color:#a9bac6;margin:-4px 0 4px}
+.hint::before{content:"→ ";color:#c5e8f5}
+/* step status */
+.section-head{align-items:flex-start}
+.section-head .badge{margin-left:auto}
+.badge{flex-shrink:0;font:600 12px/1 "Segoe UI",system-ui,sans-serif;padding:6px 10px;border-radius:999px;border:1px solid #334b58;color:#c9d3da;background:#141b20;white-space:nowrap}
+.badge.done{color:#8bd5a5;border-color:#2f5a42;background:#12201a}
+.badge.done::before{content:"✓ "}
+.badge.active{color:#c5e8f5;border-color:#4a6878;background:#15222a}
+.badge.running{color:#14232b;background:#c5e8f5;border-color:#c5e8f5}
+.badge.warn{color:#f2c879;border-color:#5a4a26;background:#211c10}
+.badge.locked{color:#7f8d97;border-style:dashed}
+/* address: short form + copy */
+#wallet code{font-size:12.5px}
+#wallet .copy{min-height:0;padding:4px 9px;margin:0 6px 0 4px;font-size:12px;border-radius:7px;background:#1a2329;border:1px solid #334b58;color:#fff}
+#wallet .copy:hover{background:#22303a}
+/* all four cards equal height per row */
+.grid{align-items:stretch}
+.grid>section{display:flex;flex-direction:column}
+.grid>section.wide{display:block}
+
+/* Align paired action cards; let mobile content grow naturally. */
+@media(min-width:721px){
+.grid>section:nth-child(3),.grid>section:nth-child(4){display:flex;flex-direction:column}
+.grid>section:nth-child(3)>p,.grid>section:nth-child(4)>p{min-height:3.3em}
+.grid>section:nth-child(3)>.actions,.grid>section:nth-child(4)>.actions{margin-top:auto}
+.grid>section:nth-child(3)>.hint,.grid>section:nth-child(4)>.hint{min-height:1.65em}
+}
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="topbar"><div class="brand"><span class="mark" aria-hidden="true">GFL</span>Good Faith Layer</div><div class="network"><span class="dot" aria-hidden="true"></span>GenLayer Studionet · 61999</div></header>
+<div class="hero"><div class="eyebrow">Wallet sandbox</div><h1>Good faith. Verified.</h1><p>Accept a payment with attested checks. Open a claim and follow the contract's decision, signed through your wallet.</p><div class="chips"><span class="chip">Gasless · No funding required</span><span class="chip neutral">Wallet signatures</span><span class="chip neutral">Separate demo deployment</span></div></div>
+<section id="banner"><strong class="bad">Wallet or network changed.</strong>
+<span id="bannerText"></span> Pending actions were cancelled. Reconnect, then re-arm; a transaction already sent is resumed, not re-sent.</section>
+
+<div class="grid">
+<section>
+  <div class="section-head"><span class="step">01</span><div><h2>Connect your wallet</h2><div class="subtitle">Your account · Studionet network</div></div><span class="badge locked" id="stWallet" role="status">Not connected</span></div>
+  <div id="wallet" class="mut">not connected</div>
+  <div class="actions"><button id="bConnect">Connect wallet</button></div>
+</section>
+
+<section>
+  <div class="section-head"><span class="step">02</span><div><h2>Load your case</h2><div class="subtitle">Contract and payment details</div></div><span class="badge locked" id="stCase" role="status">Waiting</span></div>
+  <div id="case" class="mut">not loaded (run <code>operator_studionet.py setup</code> first)</div>
+  <div class="actions"><button id="bLoad">Load case</button></div>
+</section>
+
+<section>
+  <div class="section-head"><span class="step">03</span><div><h2>Accept payment</h2><div class="subtitle">You sign · accept_payment</div></div><span class="badge locked" id="stAccept" role="status">Locked</span></div>
+  <p class="mut">Arm, then run <code>operator_studionet.py attest</code>. When the attestation is readable the wallet
+  prompt opens; confirm promptly.</p>
+  <div class="actions"><button id="bArmAccept" disabled>Arm accept</button> <button id="bCancelAccept" disabled>Cancel</button></div>
+  <div class="hint" id="hintAccept" aria-live="polite">Connect your wallet first.</div>
+  <details open><summary>Execution progress and evidence</summary><ol id="accept"></ol></details>
+</section>
+
+<section>
+  <div class="section-head"><span class="step">04</span><div><h2>Open a claim</h2><div class="subtitle">You sign · open_claim</div></div><span class="badge locked" id="stClaim" role="status">Locked</span></div>
+  <p class="mut">After <code>operator_studionet.py flag --accept-hash …</code> succeeds, arm.</p>
+  <div class="actions"><button id="bArmClaim" disabled>Arm claim</button> <button id="bCancelClaim" disabled>Cancel</button></div>
+  <div class="hint" id="hintClaim" aria-live="polite">Connect your wallet first.</div>
+  <details open><summary>Execution progress and evidence</summary><ol id="claim"></ol></details>
+</section>
+
+<section class="wide log-card"><div class="log-head"><div><h2>Activity log</h2><div class="subtitle">Export wallet activity for verification</div></div><button id="bDownload">Download log</button></div><details><summary>View technical log</summary><pre id="log"></pre></details><div class="note">Demo amounts are internal contract units. No real USDC transfer is made. The operator's verify report confirms finality and the full result.</div></section>
+</div><footer class="foot"><span>Good Faith Layer · External wallet sandbox</span><span>Keys stay in your wallet · No Snap required</span></footer></main>
+
+<script type="module">
+import { mountPage } from "./sn-page.js";
+const store = (name) => { try { return window[name]; } catch { return null; } };
+mountPage({
+  doc: document, provider: window.ethereum, loadSdk: () => import("./genlayer-js-1.1.8.js"),
+  prefs: store("localStorage"), pendingStore: store("sessionStorage"),
+});
+</script>
+</body>
+</html>

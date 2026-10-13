@@ -1,0 +1,79 @@
+[
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "bytes32",
+    "name": "txId",
+    "type": "bytes32"
+   },
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "recipient",
+    "type": "address"
+   },
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "activator",
+    "type": "address"
+   }
+  ],
+  "name": "NewTransaction",
+  "type": "event"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "_sender",
+    "type": "address"
+   },
+   {
+    "internalType": "address",
+    "name": "_recipient",
+    "type": "address"
+   },
+   {
+    "internalType": "uint256",
+    "name": "_numOfInitialValidators",
+    "type": "uint256"
+   },
+   {
+    "internalType": "uint256",
+    "name": "_maxRotations",
+    "type": "uint256"
+   },
+   {
+    "internalType": "bytes",
+    "name": "_txData",
+    "type": "bytes"
+   }
+  ],
+  "name": "addTransaction",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "bytes32",
+    "name": "txId",
+    "type": "bytes32"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "txSlot",
+    "type": "uint256"
+   }
+  ],
+  "name": "CreatedTransaction",
+  "type": "event"
+ }
+]

@@ -1,0 +1,332 @@
+{
+ "ctor": {
+  "kwparams": {},
+  "params": [
+   [
+    "flag_authority",
+    "string"
+   ]
+  ]
+ },
+ "methods": {
+  "accept_payment": {
+   "kwparams": {},
+   "params": [
+    [
+     "payment_id",
+     "string"
+    ],
+    [
+     "policy_id",
+     "string"
+    ],
+    [
+     "assertions",
+     "string"
+    ]
+   ],
+   "payable": false,
+   "readonly": false,
+   "ret": "null"
+  },
+  "attest": {
+   "kwparams": {},
+   "params": [
+    [
+     "payment_id",
+     "string"
+    ],
+    [
+     "attested_evidence",
+     "string"
+    ]
+   ],
+   "payable": false,
+   "readonly": false,
+   "ret": "null"
+  },
+  "flag_payment": {
+   "kwparams": {},
+   "params": [
+    [
+     "payment_id",
+     "string"
+    ],
+    [
+     "reason",
+     "string"
+    ]
+   ],
+   "payable": false,
+   "readonly": false,
+   "ret": "null"
+  },
+  "fund_platform_bond": {
+   "kwparams": {},
+   "params": [
+    [
+     "amount",
+     "int"
+    ]
+   ],
+   "payable": false,
+   "readonly": false,
+   "ret": "null"
+  },
+  "fund_protection_pool": {
+   "kwparams": {},
+   "params": [
+    [
+     "amount",
+     "int"
+    ]
+   ],
+   "payable": false,
+   "readonly": false,
+   "ret": "null"
+  },
+  "get_accepted_at": {
+   "kwparams": {},
+   "params": [
+    [
+     "payment_id",
+     "string"
+    ]
+   ],
+   "readonly": true,
+   "ret": "string"
+  },
+  "get_claim_balance": {
+   "kwparams": {},
+   "params": [
+    [
+     "who",
+     "string"
+    ]
+   ],
+   "readonly": true,
+   "ret": "int"
+  },
+  "get_max_attestation_age": {
+   "kwparams": {},
+   "params": [
+    [
+     "policy_id",
+     "string"
+    ]
+   ],
+   "readonly": true,
+   "ret": "int"
+  },
+  "get_paid_out": {
+   "kwparams": {},
+   "params": [
+    [
+     "payment_id",
+     "string"
+    ]
+   ],
+   "readonly": true,
+   "ret": "int"
+  },
+  "get_platform_bond": {
+   "kwparams": {},
+   "params": [],
+   "readonly": true,
+   "ret": "int"
+  },
+  "get_policy": {
+   "kwparams": {},
+   "params": [
+    [
+     "policy_id",
+     "string"
+    ]
+   ],
+   "readonly": true,
+   "ret": "string"
+  },
+  "get_protection_pool": {
+   "kwparams": {},
+   "params": [],
+   "readonly": true,
+   "ret": "int"
+  },
+  "get_reasoning": {
+   "kwparams": {},
+   "params": [
+    [
+     "payment_id",
+     "string"
+    ]
+   ],
+   "readonly": true,
+   "ret": "string"
+  },
+  "get_required_check_ids": {
+   "kwparams": {},
+   "params": [
+    [
+     "policy_id",
+     "string"
+    ]
+   ],
+   "readonly": true,
+   "ret": "string"
+  },
+  "get_required_checks": {
+   "kwparams": {},
+   "params": [
+    [
+     "policy_id",
+     "string"
+    ]
+   ],
+   "readonly": true,
+   "ret": "string"
+  },
+  "get_status": {
+   "kwparams": {},
+   "params": [
+    [
+     "payment_id",
+     "string"
+    ]
+   ],
+   "readonly": true,
+   "ret": "string"
+  },
+  "get_verdict": {
+   "kwparams": {},
+   "params": [
+    [
+     "payment_id",
+     "string"
+    ]
+   ],
+   "readonly": true,
+   "ret": "string"
+  },
+  "has_attestation": {
+   "kwparams": {},
+   "params": [
+    [
+     "payment_id",
+     "string"
+    ]
+   ],
+   "readonly": true,
+   "ret": "bool"
+  },
+  "is_attestation_fresh": {
+   "kwparams": {},
+   "params": [
+    [
+     "payment_id",
+     "string"
+    ]
+   ],
+   "readonly": true,
+   "ret": "bool"
+  },
+  "is_attester": {
+   "kwparams": {},
+   "params": [
+    [
+     "who",
+     "string"
+    ]
+   ],
+   "readonly": true,
+   "ret": "bool"
+  },
+  "open_claim": {
+   "kwparams": {},
+   "params": [
+    [
+     "payment_id",
+     "string"
+    ]
+   ],
+   "payable": false,
+   "readonly": false,
+   "ret": "null"
+  },
+  "post_payer_bond": {
+   "kwparams": {},
+   "params": [
+    [
+     "amount",
+     "int"
+    ]
+   ],
+   "payable": false,
+   "readonly": false,
+   "ret": "null"
+  },
+  "register_attester": {
+   "kwparams": {},
+   "params": [
+    [
+     "who",
+     "string"
+    ]
+   ],
+   "payable": false,
+   "readonly": false,
+   "ret": "null"
+  },
+  "register_payment": {
+   "kwparams": {},
+   "params": [
+    [
+     "payment_id",
+     "string"
+    ],
+    [
+     "recipient",
+     "string"
+    ],
+    [
+     "amount",
+     "int"
+    ],
+    [
+     "policy_id",
+     "string"
+    ],
+    [
+     "terms",
+     "string"
+    ]
+   ],
+   "payable": false,
+   "readonly": false,
+   "ret": "null"
+  },
+  "register_policy": {
+   "kwparams": {},
+   "params": [
+    [
+     "policy_id",
+     "string"
+    ],
+    [
+     "policy_text",
+     "string"
+    ],
+    [
+     "required_checks_json",
+     "string"
+    ],
+    [
+     "max_attestation_age_seconds",
+     "int"
+    ]
+   ],
+   "payable": false,
+   "readonly": false,
+   "ret": "null"
+  }
+ }
+}

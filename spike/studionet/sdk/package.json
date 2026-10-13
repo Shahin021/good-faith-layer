@@ -1,0 +1,15 @@
+{
+  "name": "gfl-studionet-sdk",
+  "private": true,
+  "type": "module",
+  "description": "Pins genlayer-js 1.1.8 for the Studionet wallet page bundle and its offline tests.",
+  "dependencies": {
+    "genlayer-js": "1.1.8"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10"
+  },
+  "scripts": {
+    "bundle": "esbuild entry.js --bundle --format=esm --platform=browser --legal-comments=none --outfile=../public/vendor/genlayer-js-1.1.8.js"
+  }
+}

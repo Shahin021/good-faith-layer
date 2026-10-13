@@ -1,0 +1,16 @@
+{
+  "name": "gfl-studionet-gate-sdk",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "genlayer-js": "1.1.8"
+  },
+  "private": true,
+  "type": "module"
+}
